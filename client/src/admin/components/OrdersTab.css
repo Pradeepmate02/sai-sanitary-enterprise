@@ -1,0 +1,19 @@
+.orders-tab-container h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.empty-logs-wrapper {
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  padding: 40px;
+  text-align: center;
+}
+
+.empty-logs-wrapper p {
+  color: #475569;
+  font-size: 14px;
+  margin: 0;
+}
