@@ -33,7 +33,7 @@ function InventoryTab({ products, setProducts, brands, categories }) {
     <div className="inventory-tab-container">
       <div className="tab-actions-header">
         <h2>Active Catalog Items</h2>
-        <button className="admin-add-btn" onClick={() => setIsModalOpen(true)}>➕ Add New Product</button>
+        <button className="admin-add-btn" onClick={() => setIsModalOpen(true)}><i className="fa-solid fa-plus"></i> Add New Product</button>
       </div>
       
       <div className="table-wrapper">
@@ -63,7 +63,7 @@ function InventoryTab({ products, setProducts, brands, categories }) {
                   </span>
                 </td>
                 <td>
-                  <button className="admin-delete-inline-btn" onClick={() => handleDelete(product.id)}>Remove 🗑️</button>
+                  <button className="admin-delete-inline-btn" onClick={() => handleDelete(product.id)}>Remove <i className="fa-solid fa-trash-can"></i></button>
                 </td>
               </tr>
             ))}

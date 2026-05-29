@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./customer/Customer.css";
-import "./admin/admin.css"
 
 // 1. Updated Customer Page Imports
 import LoginPage from "./customer/pages/LoginPage";

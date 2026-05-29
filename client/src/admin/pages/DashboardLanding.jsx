@@ -38,12 +38,12 @@ function DashboardLanding() {
         </div>
 
         <nav className="sidebar-nav">
-          <button className={`nav-item-btn ${activeTab === "dashboard" ? "active" : ""}`} onClick={() => setActiveTab("dashboard")}>📊 Dashboard Overview</button>
-          <button className={`nav-item-btn ${activeTab === "inventory" ? "active" : ""}`} onClick={() => setActiveTab("inventory")}>📦 Inventory Control</button>
-          <button className={`nav-item-btn ${activeTab === "orders" ? "active" : ""}`} onClick={() => setActiveTab("orders")}>📜 Order Logs</button>
-          <button className={`nav-item-btn ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}>⚙️ Portal Settings</button>
+          <button className={`nav-item-btn ${activeTab === "dashboard" ? "active" : ""}`} onClick={() => setActiveTab("dashboard")}><i className="fa-solid fa-chart-line"></i> Dashboard Overview</button>
+          <button className={`nav-item-btn ${activeTab === "inventory" ? "active" : ""}`} onClick={() => setActiveTab("inventory")}><i className="fa-solid fa-warehouse"></i> Inventory Control</button>
+          <button className={`nav-item-btn ${activeTab === "orders" ? "active" : ""}`} onClick={() => setActiveTab("orders")}><i className="fa-solid fa-bars-staggered"></i> Order Logs</button>
+          <button className={`nav-item-btn ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}><i className="fa-solid fa-gear"></i> Portal Settings</button>
         </nav>
-        <button className="admin-logout-btn" onClick={() => navigate("/login")}>🚪 Exit Portal</button>
+        <button className="admin-logout-btn" onClick={() => navigate("/login")}><i className="fa-solid fa-arrow-right-from-bracket"></i> Exit Portal</button>
       </aside>
 
       {/* RENDER DYNAMIC COMPONENTS ACCORDING TO ACTIVE TAB */}

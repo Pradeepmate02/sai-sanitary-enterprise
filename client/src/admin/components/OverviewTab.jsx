@@ -3,10 +3,10 @@ import "./OverviewTab.css";
 
 function OverviewTab({ products }) {
   const metrics = [
-    { title: "Total Revenue", value: "₹2,45,800", icon: "💰", change: "+12% this week" },
-    { title: "Active Orders", value: "38", icon: "📦", change: "5 pending dispatch" },
-    { title: "Total Products", value: products.length.toString(), icon: "🛠️", change: "Current catalog count" },
-    { title: "Out of Stock", value: products.filter(p => parseInt(p.stock) === 0).length.toString(), icon: "⚠️", change: "Requires attention" },
+    { title: "Total Revenue", value: "₹2,45,800", icon: <i className="fa-solid fa-sack-dollar"></i>, change: "+12% this week" },
+    { title: "Active Orders", value: "38", icon: <i className="fa-solid fa-truck-moving"></i>, change: "5 pending dispatch" },
+    { title: "Total Products", value: products.length.toString(), icon: <i className="fa-solid fa-landmark"></i>, change: "Current catalog count" },
+    { title: "Out of Stock", value: products.filter(p => parseInt(p.stock) === 0).length.toString(), icon: <i className="fa-solid fa-triangle-exclamation"></i>, change: "Requires attention" },
   ];
 
   const recentOrders = [

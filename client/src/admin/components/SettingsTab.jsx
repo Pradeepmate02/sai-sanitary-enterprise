@@ -31,7 +31,7 @@ function SettingsTab({ categories, setCategories, brands, setBrands }) {
           <button type="submit" className="settings-add-btn">Add</button>
         </form>
         <div className="settings-badge-list">
-          {categories.map((cat, idx) => <span key={idx} className="settings-item-badge">🏷️ {cat}</span>)}
+          {categories.map((cat, idx) => <span key={idx} className="settings-item-badge"><i className="fa-solid fa-tag"></i> &nbsp; {cat}</span>)}
         </div>
       </div>
 
@@ -43,7 +43,7 @@ function SettingsTab({ categories, setCategories, brands, setBrands }) {
           <button type="submit" className="settings-add-btn">Add</button>
         </form>
         <div className="settings-badge-list">
-          {brands.map((brnd, idx) => <span key={idx} className="settings-item-badge">🏭 {brnd}</span>)}
+          {brands.map((brnd, idx) => <span key={idx} className="settings-item-badge"><i className="fa-solid fa-file-contract"></i> &nbsp; {brnd}</span>)}
         </div>
       </div>
     </div>
