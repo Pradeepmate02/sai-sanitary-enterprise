@@ -1,61 +1,33 @@
 // server/models/User.js
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      trim: true,
+      required: [true, "Name field is mandatory"],
+      trim: true
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email address is mandatory"],
       unique: true,
-      trim: true,
-      lowercase: true, 
+      lowercase: true,
+      trim: true
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password string secure hash is mandatory"]
     },
     role: {
       type: String,
-      enum: ["customer", "admin"],
-      default: "customer",
-    },
+      enum: ["admin", "staff", "user"],
+      default: "admin" // Automatically defaults to admin clearance for your setup portal
+    }
   },
-  { timestamps: true }
-);
-
-// PASSWORD HASHING HOOK: Automatically hashes password before saving
-userSchema.pre("save", async function (next) {
-  // Only hash the password if it has been modified (or is new)
-  if (!this.isModified("password")) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+  { 
+    timestamps: true // Automatically injects and updates createdAt and updatedAt tracks
   }
-});
-
-// PASSWORD VERIFICATION METHOD: Compares incoming plain-text with hashed database string
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
-
-// AUTHORIZATION TOKEN METHOD: Generates custom app JWT
-userSchema.methods.generateAuthToken = function () {
-  return jwt.sign(
-    { _id: this._id, role: this.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
-};
+);
 
 module.exports = mongoose.model("User", userSchema);
