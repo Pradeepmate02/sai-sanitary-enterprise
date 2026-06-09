@@ -1,0 +1,142 @@
+.footer{
+  background:#0f172a;
+  color:white;
+  padding:5px 20px;
+}
+
+.footer-container{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  align-items:start;
+}
+
+.footer-section h2{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+.footer-section h3{
+  font-size:18px;
+  margin-bottom:10px;
+  color:#38bdf8;
+}
+
+.footer-section p{
+  font-size:14px;
+  line-height:1.5;
+  color:#d1d5db;
+  margin-bottom:5px;
+}
+
+.footer-section ul{
+  list-style:none;
+  padding:0;
+}
+
+.footer-section ul li{
+  margin-bottom:8px;
+  cursor:pointer;
+  transition:.3s;
+  color:#d1d5db;
+}
+
+.footer-section ul li:hover{
+  color:#38bdf8;
+  transform:translateX(5px);
+}
+
+.social-icons{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+}
+
+.social-icons svg{
+  width:40px;
+  height:40px;
+  padding:10px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  cursor:pointer;
+  transition:.3s;
+}
+
+.social-icons svg:hover{
+  background:#38bdf8;
+  transform:translateY(-4px);
+}
+
+.footer-bottom{
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,0.1);
+  text-align:center;
+  color:#9ca3af;
+  font-size:13px;
+}
+
+@media(max-width:992px){
+
+  .footer-container{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:768px){
+
+  .footer{
+    padding:50px 20px;
+  }
+
+  .footer-container{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .social-icons{
+    justify-content:center;
+  }
+
+  .footer-section h2{
+    font-size:28px;
+  }
+
+}
+
+
+.footer-section li{
+  cursor:pointer;
+}
+
+.footer-section li:hover{
+  color:#38bdf8;
+}
+
+
+.social-icons a{
+  text-decoration:none;
+  color:white;
+}
+
+.backToTop{
+  width:45px;
+  height:45px;
+  border:none;
+  border-radius:50%;
+  background:#38bdf8;
+  color:white;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:10px auto ;
+  font-size:16px;
+  transition:.3s;
+}
+
+.backToTop:hover{
+  transform:translateY(-6px);
+  box-shadow:0 10px 25px rgba(56,189,248,.4);
+}
