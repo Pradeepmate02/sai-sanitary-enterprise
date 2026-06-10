@@ -1,0 +1,91 @@
+.aboutContainer{
+min-height:100vh;
+background:#f8fafc;
+padding:80px 10%;
+}
+
+.aboutHero{
+text-align:center;
+margin-bottom:80px;
+}
+
+.aboutHero h1{
+font-size:60px;
+color:#0F766E;
+margin-bottom:20px;
+}
+
+.aboutHero p{
+max-width:800px;
+margin:auto;
+font-size:20px;
+line-height:1.8;
+color:#64748b;
+}
+
+.aboutSection{
+background:white;
+padding:40px;
+border-radius:25px;
+margin-bottom:30px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.aboutSection h2{
+color:#0F766E;
+margin-bottom:20px;
+font-size:32px;
+}
+
+.aboutSection p{
+font-size:18px;
+line-height:1.8;
+color:#475569;
+}
+
+.aboutCards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+margin-top:40px;
+}
+
+.aboutCard{
+background:white;
+padding:35px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.3s;
+}
+
+.aboutCard:hover{
+transform:translateY(-8px);
+}
+
+.aboutCard h3{
+margin-bottom:15px;
+font-size:24px;
+color:#0F766E;
+}
+
+.aboutCard p{
+color:#64748b;
+line-height:1.7;
+}
+
+@media(max-width:768px){
+
+.aboutContainer{
+padding:40px 20px;
+}
+
+.aboutHero h1{
+font-size:40px;
+}
+
+.aboutHero p{
+font-size:16px;
+}
+
+}

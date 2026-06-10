@@ -1,0 +1,36 @@
+.loaderContainer{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+gap:20px;
+background:#f8fafc;
+}
+
+.loader{
+width:70px;
+height:70px;
+border:6px solid #d1d5db;
+border-top:6px solid #0F766E;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+.loaderContainer p{
+font-size:20px;
+font-weight:600;
+color:#0F766E;
+}
+
+@keyframes spin{
+
+0%{
+transform:rotate(0deg);
+}
+
+100%{
+transform:rotate(360deg);
+}
+
+}
