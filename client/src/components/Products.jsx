@@ -66,11 +66,11 @@ p.name
 search.toLowerCase()
 );
 
-const matchesCategory=
+const matchesCategory =
 
-category==="All"
+category === "All"
 ||
-p.category===category;
+p.category === category.toLowerCase().replace(" ", "-");
 
 let matchesPrice=true;
 
@@ -97,6 +97,8 @@ p.price>4000;
 
 }
 
+
+
 return(
 
 matchesSearch &&
@@ -106,6 +108,7 @@ matchesPrice
 );
 
 });
+
 
 
 
@@ -302,7 +305,14 @@ zIndex:"10"
 >
 
 
-{["All","Shower","Sink","Tap","Pipe","Pipe Fitting","Tank","Motor","Shopdish"]
+{[
+  "All",
+  "Pipes",
+  "Bathroom",
+  "Kitchen",
+  "Motors",
+  "Water Tanks"
+]
 .map((item)=>(
 
 <p
@@ -405,6 +415,8 @@ zIndex:"10"
 key={item}
 
 onClick={()=>{
+
+console.log("Selected Price:", item);
 
 setPriceFilter(item);
 

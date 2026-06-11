@@ -468,3 +468,28 @@ grid-template-columns:1fr;
 }
 
 }
+
+.toast{
+position:fixed;
+top:100px;
+right:30px;
+background:#10b981;
+color:white;
+padding:16px 24px;
+border-radius:12px;
+font-weight:600;
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+z-index:9999;
+animation:slideIn .3s ease;
+}
+
+@keyframes slideIn{
+from{
+opacity:0;
+transform:translateX(100px);
+}
+to{
+opacity:1;
+transform:translateX(0);
+}
+}

@@ -190,3 +190,11 @@ font-size:20px;
 }
 
 }
+
+.wishlistGrid{
+  display:grid;
+  grid-template-columns:
+  repeat(auto-fit,minmax(280px,320px));
+  gap:30px;
+  justify-content:center;
+}

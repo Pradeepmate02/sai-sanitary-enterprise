@@ -142,6 +142,7 @@ function CategoryPage({
   const [minRating, setMinRating] = useState(0);
   const [priceRange, setPriceRange] = useState("all");
   const [onlyInStock, setOnlyInStock] = useState(false);
+  const [toast, setToast] = useState("");
 
   const categoryKey = category || "";
   const categoryInfo =
@@ -212,21 +213,45 @@ function CategoryPage({
         },
       ];
     });
+    setToast("🛒 Added to Cart");
+
+setTimeout(() => {
+  setToast("");
+}, 2000);
   }
 
   function toggleWishlist(product) {
-    if (typeof setWishlist !== "function") return;
+  if (typeof setWishlist !== "function") return;
 
-    setWishlist((prevWishlist) => {
-      const exists = prevWishlist.some((item) => item.name === product.name);
+  const exists = wishlist.some(
+    (item) => item.name === product.name
+  );
 
-      if (exists) {
-        return prevWishlist.filter((item) => item.name !== product.name);
-      }
+  if (exists) {
 
-      return [...prevWishlist, product];
-    });
+    setWishlist(
+      wishlist.filter(
+        (item) => item.name !== product.name
+      )
+    );
+
+    setToast("❌ Removed from Wishlist");
+
+  } else {
+
+    setWishlist([
+      ...wishlist,
+      product
+    ]);
+
+    setToast("❤️ Added to Wishlist");
+
   }
+
+  setTimeout(() => {
+    setToast("");
+  }, 2000);
+}
 
   function goToProduct(name) {
     navigate(`/product/${encodeURIComponent(name)}`);
@@ -241,15 +266,21 @@ function CategoryPage({
   }
 
   return (
-    <>
-      <Navbar
-        search={search}
-        setSearch={setSearch}
-        cart={cart}
-        wishlist={wishlist}
-      />
+  <>
+    <Navbar
+      search={search}
+      setSearch={setSearch}
+      cart={cart}
+      wishlist={wishlist}
+    />
 
-      <div className="categoryPage">
+    {toast && (
+      <div className="toast">
+        {toast}
+      </div>
+    )}
+
+    <div className="categoryPage">
         <div className="categoryHeader">
           <div>
             <p className="categoryBreadcrumb">Home / {categoryInfo.title}</p>

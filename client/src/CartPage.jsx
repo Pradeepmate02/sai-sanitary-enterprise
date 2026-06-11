@@ -254,10 +254,9 @@ navigate(
 }
 
 >
-
 <img
 
-src={item.image}
+src={item.image || item.thumbnail}
 
 alt={item.name}
 
