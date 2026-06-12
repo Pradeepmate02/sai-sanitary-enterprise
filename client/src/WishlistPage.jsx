@@ -161,23 +161,27 @@ Continue Shopping
 
 {
 
-wishlist.map(
+wishlist.map((item,index) => {
 
-(item,index)=>(
+console.log(item);
+console.log(item.name, item.image);
+
+return (
 
 <div
 className="wishlistCard"
 key={index}
 >
-
 <img
-src={item.image}
-alt={item.name}
-onClick={()=>
-navigate(
-`/product/${item.name}`
-)
-}
+  src={
+    item.image ||
+    item.thumbnail ||
+    item.images?.[0]
+  }
+  alt={item.name}
+  onClick={() =>
+    navigate(`/product/${item.name}`)
+  }
 />
 
 <div className="wishlistCardContent">
@@ -209,10 +213,10 @@ removeItem(item.name)
 </div>
 
 </div>
-)
 
-)
+);
 
+})
 }
 
 </div>

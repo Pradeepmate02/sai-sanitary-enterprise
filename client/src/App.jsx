@@ -249,6 +249,7 @@ path="/buy"
 element={
 <BuyNowPage
 cart={cart}
+setCart={setCart}
 search={search}
 setSearch={setSearch}
 />

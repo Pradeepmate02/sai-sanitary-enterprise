@@ -40,6 +40,8 @@ useEffect(() => {
   setSelectedImage(product.images[0]);
 }, [product]);
 const [quantity,setQuantity]=useState(1);
+const [toast,setToast]=useState("");
+
 
 useEffect(() => {
   setQuantity(1);
@@ -92,6 +94,12 @@ quantity
 
 }
 
+setToast("🛒 Added to cart");
+
+setTimeout(() => {
+  setToast("");
+}, 2000);
+
 }
 
 return(
@@ -103,6 +111,13 @@ search={search}
 setSearch={setSearch}
 cart={cart}
 />
+{
+toast && (
+  <div className="toast">
+    {toast}
+  </div>
+)
+}
 
 <div className="productDetailContainer">
 

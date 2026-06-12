@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 function BuyNowPage({
 
 cart=[],
+setCart,
 search,
 setSearch
 
@@ -114,12 +115,12 @@ return;
 
 
 showPopup(
-
 "🎉 Order placed successfully!",
-
 true
-
 );
+
+setCart([]);
+localStorage.removeItem("cart");
 
 }
 
@@ -403,18 +404,23 @@ Order Summary
 
 {
 
-checkoutItems.map(
+checkoutItems.map((item,index) => {
 
-(item,index)=>(
+
+
+return (
 
 <div
 className="summaryItem"
 key={index}
 >
-
 <img
-src={item.image}
-alt=""
+  src={
+    item.image ||
+    item.thumbnail ||
+    item.images?.[0]
+  }
+  alt={item.name}
 />
 
 <div>
@@ -444,10 +450,9 @@ item.quantity}
 
 </div>
 
-)
+);
 
-)
-
+})
 }
 
 <hr/>
