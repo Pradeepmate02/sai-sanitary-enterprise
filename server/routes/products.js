@@ -6,7 +6,7 @@ const Category = require("../models/Category");
 const Brand = require("../models/Brand");
 const { protect, adminOnly } = require("../middlewares/authMiddleware");
 
-// 📥 1. CLIENT CATALOG QUERY (Supports Search Filters by Name, Category, or Brand)
+//  1. CLIENT CATALOG QUERY (Supports Search Filters by Name, Category, or Brand)
 router.get("/", async (req, res) => {
   try {
     const { search, category, brand } = req.query;
@@ -103,7 +103,7 @@ router.put("/:skuId", protect, adminOnly, async (req, res) => {
   }
 });
 
-// 🗑️ 4. ADMIN ACTION: PURGE PRODUCT FROM COLLECTION (Protected: Admins Only)
+//  4. ADMIN ACTION: PURGE PRODUCT FROM COLLECTION (Protected: Admins Only)
 router.delete("/:skuId", protect, adminOnly, async (req, res) => {
   try {
     const targetAsset = await Product.findOneAndDelete({ skuId: req.params.skuId });

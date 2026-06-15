@@ -4,7 +4,7 @@ const router = express.Router();
 const User = require("../models/User");
 const { hashPassword, comparePassword, generateToken } = require("../utils/authHelpers");
 
-// 🟢 1. USER REGISTRATION ENDPOINT
+//  1. USER REGISTRATION ENDPOINT
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -35,7 +35,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// 🔵 2. AUTOMATED ROLE-DETECTION LOGIN ENDPOINT
+//  2. AUTOMATED ROLE-DETECTION LOGIN ENDPOINT
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
