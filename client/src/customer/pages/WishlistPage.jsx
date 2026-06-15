@@ -1,4 +1,5 @@
 import React from "react";
+import "./WishListPage.css";
 import Navbar from "../components/Navbar";
 import {useNavigate} from "react-router-dom";
 import {FaHeartBroken} from "react-icons/fa";

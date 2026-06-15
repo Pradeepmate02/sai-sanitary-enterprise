@@ -1,4 +1,5 @@
 import React,{useState} from "react";
+import "./BuyNowPage.css";
 import Navbar from "../components/Navbar";
 
 function BuyNowPage({

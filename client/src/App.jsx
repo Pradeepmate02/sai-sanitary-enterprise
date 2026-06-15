@@ -1,20 +1,18 @@
 import React,{useState,useEffect} from "react";
 import "./App.css";
-import LoginPage from "./LoginPage";
+import LoginPage from "./customer/pages/LoginPage";
 
-import CartPage from "./CartPage";
-import WishlistPage from "./WishlistPage";
-import BuyNowPage from "./BuyNowPage";
+import CartPage from "./customer/pages/CartPage";
+import WishlistPage from "./customer/pages/WishlistPage";
+import BuyNowPage from "./customer/pages/BuyNowPage";
 
+import AboutPage from "./customer/pages/AboutPage";
 
-import NotFoundPage from "./NotFoundPage";
-import AboutPage from "./AboutPage";
-
-import ContactPage from "./ContactPage";
-
+import ContactPage from "./customer/pages/ContactPage";
 
 import ProfilePage from "./ProfilePage";
 import OrdersPage from "./OrdersPage";
+import NotFoundPage from "./NotFoundPage";
 import {
 BrowserRouter,
 Routes,
@@ -22,18 +20,17 @@ Route
 }
 from "react-router-dom";
 
-import Hero from "./components/Hero";
-import Navbar from "./components/Navbar";
-import Categories from "./components/Categories";
-import Products from "./components/Products";
-import WhyChoose from "./components/WhyChoose";
-import Testimonials from "./components/Testimonials";
-import Newsletter from "./components/Newsletter";
-import Footer from "./components/Footer";
+import Hero from "./customer/components/Hero";
+import Navbar from "./customer/components/Navbar";
+import Categories from "./customer/components/Categories";
+import Products from "./customer/components/Products";
+import WhyChoose from "./customer/components/WhyChoose";
+import Testimonials from "./customer/components/Testimonials";
+import Newsletter from "./customer/components/Newsletter";
+import Footer from "./customer/components/Footer";
 
-import ProductDetails from "./ProductDetails";
-import CategoryPage from "./CategoryPage";
-
+import ProductDetails from "./customer/pages/ProductDetails";
+import CategoryPage from "./customer/pages/CategoryPage";
 function Home({
 
 search,
