@@ -12,18 +12,18 @@ router.get("/", async (req, res) => {
     const { search, category, brand } = req.query;
     let queryMatrix = {};
 
-    // Requirement: Allow search by name (Case-insensitive partial keyword matching)
+    // Allow search by name (Case-insensitive partial keyword matching)
     if (search) {
       queryMatrix.name = { $regex: search, $options: "i" };
     }
 
-    // Resolve structural category name to matching ID filter
+    // Resolve category name to matching ID filter
     if (category) {
       const foundCategory = await Category.findOne({ name: category });
       if (foundCategory) queryMatrix.category = foundCategory._id;
     }
 
-    // Resolve structural brand name to matching ID filter
+    // Resolve brand name to matching ID filter
     if (brand) {
       const foundBrand = await Brand.findOne({ name: brand });
       if (foundBrand) queryMatrix.brand = foundBrand._id;
@@ -79,19 +79,35 @@ router.post("/", protect, adminOnly, async (req, res) => {
 // ✏️ 3. ADMIN ACTION: EDIT EXISTING PRODUCT (Protected: Admins Only)
 router.put("/:skuId", protect, adminOnly, async (req, res) => {
   try {
-    const { name, description, price, stock, minStockThreshold } = req.body;
+    const { name, description, price, stock, minStockThreshold, brandName, categoryName, images } = req.body;
+
+    // Build the master data update object
+    let updateData = { 
+      name, 
+      description, 
+      price: parseFloat(price), 
+      stock: parseInt(stock),
+      minStockThreshold: parseInt(minStockThreshold),
+      images: images || []
+    };
+
+    // Resolve category mutations if modified in the editing form
+    if (categoryName) {
+      const foundCategory = await Category.findOne({ name: categoryName });
+      if (foundCategory) updateData.category = foundCategory._id;
+    }
+
+    // Resolve brand mutations if modified in the editing form
+    if (brandName) {
+      const foundBrand = await Brand.findOne({ name: brandName });
+      if (foundBrand) updateData.brand = foundBrand._id;
+    }
 
     const modifiedAsset = await Product.findOneAndUpdate(
       { skuId: req.params.skuId },
-      { 
-        name, 
-        description, 
-        price: parseFloat(price), 
-        stock: parseInt(stock),
-        minStockThreshold: parseInt(minStockThreshold)
-      },
+      updateData,
       { new: true, runValidators: true }
-    );
+    ).populate("category", "name").populate("brand", "name");
 
     if (!modifiedAsset) {
       return res.status(404).json({ message: "Target product tracking reference matching key not found" });
