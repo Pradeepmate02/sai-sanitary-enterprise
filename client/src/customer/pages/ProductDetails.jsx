@@ -1,5 +1,7 @@
 import React,{useState} from "react";
+import "./ProductDetails.css";
 import {useParams,useNavigate} from "react-router-dom";
+
 import Navbar from "../components/Navbar";
 
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
