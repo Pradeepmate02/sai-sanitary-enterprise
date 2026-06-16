@@ -1,4 +1,5 @@
 import React,{useState} from "react";
+import { useLocation } from "react-router-dom";
 import "./BuyNowPage.css";
 import Navbar from "../components/Navbar";
 
@@ -26,13 +27,18 @@ useState("");
 
 const [success,setSuccess]=
 useState(false);
+const location = useLocation();
+
+const buyNowItem = location.state?.buyNowItem;
+
+const orderItems = buyNowItem
+  ? [buyNowItem]
+  : cart;
 
 
 
-const total=
-
-cart.reduce(
-
+const total =
+orderItems.reduce(
 (total,item)=>
 
 total+(item.price*item.quantity),
@@ -397,7 +403,7 @@ Order Summary
 
 {
 
-cart.map(
+orderItems.map(
 
 (item,index)=>(
 
@@ -407,8 +413,8 @@ key={index}
 >
 
 <img
-src={item.image}
-alt=""
+  src={item.image || item.thumbnail}
+  alt={item.name}
 />
 
 <div>

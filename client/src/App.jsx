@@ -10,9 +10,9 @@ import AboutPage from "./customer/pages/AboutPage";
 
 import ContactPage from "./customer/pages/ContactPage";
 
-import ProfilePage from "./ProfilePage";
-import OrdersPage from "./OrdersPage";
-import NotFoundPage from "./NotFoundPage";
+import ProfilePage from "./customer/pages/ProfilePage";
+import OrdersPage from "./customer/pages/OrdersPage";
+import NotFoundPage from "./customer/pages/NotFoundPage";
 import {
 BrowserRouter,
 Routes,

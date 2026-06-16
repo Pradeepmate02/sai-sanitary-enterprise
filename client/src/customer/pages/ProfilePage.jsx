@@ -1,7 +1,6 @@
 import React from "react";
-import Navbar from "./customer/components/Navbar";
+import Navbar from "../components/Navbar";
 import "./ProfilePage.css";
-
 function ProfilePage(){
 
 const user =

@@ -13,6 +13,7 @@ import tap1 from "../assets/products/tap/tap1.jpg";
 import fitting1 from "../assets/products/pipe-fitting/fitting1.jpg";
 import dish1 from "../assets/products/shopdish/shopdish1.jpg";
 
+import products from "../../products";
 
 function Products({
 
@@ -41,51 +42,7 @@ const [showPrice,setShowPrice]=
 useState(false);
 
 
-const products=[
 
-{
-name:"Premium Shower",
-price:4999,
-category:"Shower",
-image:shower1
-},
-
-{
-name:"Luxury Sink",
-price:3999,
-category:"Sink",
-image:sink1
-},
-
-{
-name:"Modern Tap",
-price:1999,
-category:"Tap",
-image:tap1
-},
-
-{
-name:"PVC Pipe",
-price:999,
-category:"Pipe",
-image:pvc1
-},
-
-{
-name:"Water Motor",
-price:5999,
-category:"Motor",
-image:motor1
-},
-
-{
-name:"Sintex Tank",
-price:6999,
-category:"Tank",
-image:sintex1
-}
-
-];
 
 
 
@@ -115,36 +72,32 @@ p.name
 search.toLowerCase()
 );
 
-const matchesCategory=
+const matchesCategory =
+category === "All" ||
+p.category.toLowerCase() === category.toLowerCase();
+let matchesPrice = true;
 
-category==="All"
-||
-p.category===category;
+switch(priceFilter){
 
-let matchesPrice=true;
+case "Low":
+matchesPrice = p.price < 2500;
+break;
 
+case "Medium":
+matchesPrice =
+p.price >= 2500 &&
+p.price <= 4000;
+break;
 
-if(priceFilter==="Low"){
+case "High":
+matchesPrice = p.price > 4000;
+break;
 
-matchesPrice=
-p.price<2500;
-
-}
-
-if(priceFilter==="Medium"){
-
-matchesPrice=
-p.price>=2500 &&
-p.price<=4000;
-
-}
-
-if(priceFilter==="High"){
-
-matchesPrice=
-p.price>4000;
+default:
+matchesPrice = true;
 
 }
+
 
 return(
 
@@ -351,7 +304,14 @@ zIndex:"10"
 >
 
 
-{["All","Shower","Sink","Tap","Pipe","Pipe Fitting","Tank","Motor","Shopdish"]
+{[
+ "All",
+ "bathroom",
+ "kitchen",
+ "pipes",
+ "motors",
+ "water-tanks"
+]
 .map((item)=>(
 
 <p
@@ -492,16 +452,11 @@ padding:"10px"
 <div className="productGrid">
 
 {
+filteredProducts.slice(0,6).map((p,index)=>{
 
-filteredProducts.map((p,index)=>{
-
-const inWishlist=
-
+const inWishlist =
 wishlist.some(
-
-item=>
-item.name===p.name
-
+item => item.name === p.name
 );
 
 return(
@@ -514,8 +469,8 @@ key={index}
 <div className="imageContainer">
 
 <img
-src={p.image}
-alt={p.name}
+  src={p.thumbnail}
+  alt={p.name}
 />
 
 <button

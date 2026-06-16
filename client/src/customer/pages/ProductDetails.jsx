@@ -267,62 +267,82 @@ const [selectedImage,setSelectedImage]=
 useState(product.images[0]);
 
 const [quantity,setQuantity]=useState(1);
+const [toast,setToast] = useState("");
+
+function showToast(message){
+
+  setToast(message);
+
+  setTimeout(() => {
+    setToast("");
+  }, 2000);
+
+}
 
 function addToCart(){
 
-const existing=
+  const existing =
+    cart.find(item => item.name === name);
 
-cart.find(
-item=>item.name===name
-);
+  if(existing){
 
-if(existing){
+    setCart(
 
-setCart(
+      cart.map(item =>
 
-cart.map(item=>
+        item.name === name
 
-item.name===name
+        ? {
+            ...item,
+            quantity:item.quantity + quantity
+          }
 
-?
+        : item
 
-{
-...item,
-quantity:item.quantity+quantity
+      )
+
+    );
+
+  }
+
+  else{
+
+    setCart([
+
+      ...cart,
+
+      {
+        name,
+        price:product.price,
+        image:selectedImage,
+        quantity
+      }
+
+    ]);
+
+  }
+
+  if(existing){
+  showToast("🛒 Cart updated");
+}else{
+  showToast("🛒 Product added to cart");
 }
-
-:
-
-item
-
-)
-
-);
-
-}
-
-else{
-
-setCart([
-
-...cart,
-
-{
-name,
-price:product.price,
-image:selectedImage,
-quantity
-}
-
-]);
-
-}
-
 }
 
 return(
 
 <>
+
+
+{toast && (
+
+  <div className="toast">
+
+    {toast}
+
+  </div>
+
+)}
 
 <Navbar
 search={search}
@@ -419,46 +439,56 @@ product.features.map(
 
 <div className="quantityBox">
 
-<button
-onClick={()=>
-setQuantity(
-Math.max(1,quantity-1)
-)
-}
->
--
-</button>
+  <button
+    onClick={()=>
+      setQuantity(
+        Math.max(1, quantity - 1)
+      )
+    }
+  >
+    -
+  </button>
 
-<span>{quantity}</span>
+  <span>{quantity}</span>
 
-<button
-onClick={()=>
-setQuantity(quantity+1)
-}
->
-+
-</button>
+  <button
+    onClick={()=>
+      setQuantity(quantity + 1)
+    }
+  >
+    +
+  </button>
 
 </div>
 
+
+
 <div className="productButtons">
 
-<button
-className="buyBtn"
-onClick={()=>{
-addToCart();
-navigate("/buy");
-}}
+  <button
+  className="buyBtn"
+  onClick={()=>{
+    navigate("/buy", {
+      state:{
+        buyNowItem:{
+          name,
+          price: product.price,
+          image: selectedImage,
+          quantity
+        }
+      }
+    });
+  }}
 >
-Buy Now
+  Buy Now
 </button>
 
-<button
-className="cartBtn"
-onClick={addToCart}
->
-Add To Cart
-</button>
+  <button
+    className="cartBtn"
+    onClick={addToCart}
+  >
+    Add To Cart
+  </button>
 
 </div>
 
