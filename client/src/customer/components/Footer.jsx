@@ -1,53 +1,151 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Footer.css";
 
-function Footer(){
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaWhatsapp,
+  FaLinkedin,
+  FaArrowUp
+} from "react-icons/fa";
 
-return(
+function Footer() {
 
-<footer>
+  const navigate = useNavigate();
 
-<h2>
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
 
-SAI SANITARY
+  return (
+    <footer className="footer">
 
-</h2>
+      <div className="footer-container">
 
-<p>
+        {/* Company Info */}
+        <div className="footer-section">
+          <h2>SAI SANITARY</h2>
 
-📞 6206087188 | 8340144480
+          <p>
+            Premium sanitaryware, bathroom accessories,
+            kitchen fittings, and plumbing solutions
+            for homes and businesses.
+          </p>
+        </div>
 
-</p>
+        {/* Quick Links */}
+        <div className="footer-section">
+          <h3>Quick Links</h3>
 
-<p>
+          <ul>
+            <li onClick={() => navigate("/")}>
+              Home
+            </li>
 
-📧 shubhamk4247@gmail.com
+            <li onClick={() => navigate("/about")}>
+  About Us
+</li>
 
-</p>
+<li onClick={() => navigate("/contact")}>
+  Contact Us
+</li>
 
-<p>
+            <li onClick={() => navigate("/cart")}>
+              Cart
+            </li>
 
-📍 Tandwa Road, Daily Market,
-Barkagaon, Hazaribagh,
-Jharkhand
+            <li onClick={() => navigate("/wishlist")}>
+              Wishlist
+            </li>
+          </ul>
+        </div>
 
-</p>
+        {/* Categories */}
+        <div className="footer-section">
+          <h3>Categories</h3>
 
-<p>
+          <ul>
+            <li onClick={() => navigate("/category/pipes")}>
+              Pipes
+            </li>
 
-Return Policy: 2 Days
+            <li onClick={() => navigate("/category/bathroom")}>
+              Bathroom
+            </li>
 
-</p>
+            <li onClick={() => navigate("/category/motors")}>
+              Motors
+            </li>
 
-<p>
+            <li onClick={() => navigate("/category/water-tanks")}>
+              Water Tanks
+            </li>
+          </ul>
+        </div>
 
-Payment: Online / Cash
+        {/* Contact */}
+        <div className="footer-section">
+          <h3>Contact Us</h3>
 
-</p>
+          <p>📞 6206087188</p>
+          <p>📞 8340144480</p>
 
-</footer>
+          <p>📧 shubhamk4247@gmail.com</p>
 
-)
+          <p>
+            📍 Tandwa Road, Daily Market,
+            Barkagaon, Hazaribagh,
+            Jharkhand
+          </p>
 
+          <p>Return Policy: 2 Days</p>
+          <p>Payment: Online / Cash</p>
+
+          <div className="social-icons">
+
+  <a href="#" aria-label="Facebook">
+    <FaFacebookF />
+  </a>
+
+  <a href="#" aria-label="Instagram">
+    <FaInstagram />
+  </a>
+
+  <a
+    href="https://wa.me/916206087188"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="WhatsApp"
+  >
+    <FaWhatsapp />
+  </a>
+
+  <a href="#" aria-label="LinkedIn">
+    <FaLinkedin />
+  </a>
+
+</div>
+        </div>
+
+      </div>
+
+      <button
+        className="backToTop"
+        onClick={scrollToTop}
+      >
+        <FaArrowUp />
+      </button>
+
+      <div className="footer-bottom">
+        © 2026 SAI SANITARY. Word Lane Tech.
+      </div>
+
+    </footer>
+  );
 }
 
 export default Footer;
