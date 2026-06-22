@@ -3,10 +3,21 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
+    skuId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
     name: {
       type: String,
       required: true,
       trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+      default: "No description provided for this catalog item."
     },
     brand: {
       type: mongoose.Schema.Types.ObjectId,
@@ -29,6 +40,15 @@ const productSchema = new mongoose.Schema(
       min: 0,
       default: 0,
     },
+    minStockThreshold: {
+      type: Number,
+      default: 15
+    },
+    
+    images: {
+      type: [String],
+      default: [] 
+    }
   },
   { timestamps: true }
 );

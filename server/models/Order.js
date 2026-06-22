@@ -1,58 +1,56 @@
-// server/models/Product.js
+// server/models/Order.js
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema(
+const orderSchema = new mongoose.Schema(
   {
-    skuId: {
-      type: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    items: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true
+        },
+        name: { 
+          type: String, 
+          required: true 
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1
+        },
+        priceAtPurchase: {
+          type: Number,
+          required: true,
+          min: 0
+        }
+      }
+    ],
+    totalAmount: {
+      type: Number,
       required: true,
-      unique: true,
-      trim: true
-    },
-    name: {
-      type: String,
-      required: [true, "Product name is mandatory"],
-      trim: true,
-    },
-    description: {
-      type: String,
-      default: "No description provided for this architectural component asset.",
-      trim: true
-    },
-    brand: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Brand", 
-      required: [true, "Supplier brand association identifier is mandatory"],
-    },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category", 
-      required: [true, "Sorting category association identifier is mandatory"],
-    },
-    price: {
-      type: Number,
-      required: [true, "Product unit valuation price is mandatory"],
-      min: [0, "Valuation scales cannot fall below zero parameter metrics"],
-    },
-    stock: {
-      type: Number,
-      required: [true, "Available storage stock count is mandatory"],
-      min: [0, "Storage stock units cannot register negative volumes"],
-      default: 0,
-    },
-    minStockThreshold: {
-      type: Number,
-      default: 15, // Automated trigger points for low stock alerts
       min: 0
     },
-    images: [
-      {
-        type: String, // String URLs path pointing to cloud store assets or assets folders
-        default: []
-      }
-    ]
+    status: {
+      type: String,
+      enum: ["Pending", "Accepted", "Declined", "Dispatched", "Delivered"],
+      default: "Pending"
+    },
+    shippingAddress: {
+      fullName: { type: String, required: true },
+      phone: { type: String, required: true },
+      addressLine: { type: String, required: true },
+      city: { type: String, required: true },
+      state: { type: String, required: true },
+      postalCode: { type: String, required: true }
+    }
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("Order", orderSchema);

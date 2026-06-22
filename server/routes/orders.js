@@ -4,9 +4,9 @@ const router = express.Router();
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const InventoryHistory = require("../models/InventoryHistory");
-const { protect, adminOnly } = require("../middlewares/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-// 🛒 1. CUSTOMER: PLACE NEW ORDER ONLINE (Protected)
+//  1. CUSTOMER: PLACE NEW ORDER ONLINE (Protected)
 router.post("/", protect, async (req, res) => {
   try {
     const { items, shippingAddress } = req.body;
@@ -105,7 +105,7 @@ router.patch("/:orderId/status", protect, adminOnly, async (req, res) => {
 
         // Requirement: Generate low-stock alerts when inventory falls below minimum thresholds
         if (dbProduct.stock <= dbProduct.minStockThreshold) {
-          console.log(`🚨 LOW-STOCK ALERT: Material asset [ ${dbProduct.name} ] has dropped down to ${dbProduct.stock} items remaining.`);
+          console.log(` LOW-STOCK ALERT: Material asset [ ${dbProduct.name} ] has dropped down to ${dbProduct.stock} items remaining.`);
         }
 
         // Requirement: Maintain inventory history tracking logs
@@ -124,7 +124,7 @@ router.patch("/:orderId/status", protect, adminOnly, async (req, res) => {
     order.status = status;
     await order.save();
 
-    console.log(`✉️ NOTIFICATION TRANSMISSION: Customer assigned to order [ ${order._id} ] has been notified of status change: ${status}`);
+    console.log(` NOTIFICATION TRANSMISSION: Customer assigned to order [ ${order._id} ] has been notified of status change: ${status}`);
     res.status(200).json({ message: `Order status updated cleanly to [ ${status} ]`, order });
   } catch (error) {
     res.status(500).json({ message: "Fulfillment routing workflow state failure", error: error.message });

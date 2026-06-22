@@ -36,5 +36,5 @@ mongoose
 
 // Live Server Thread Port Listener
 app.listen(port, () => {
-  console.log(`🚀 Operational Server Live on Port Terminal: http://localhost:${port}`);
+  console.log(` Operational Server Live on Port Terminal: http://localhost:${port}`);
 });

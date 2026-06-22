@@ -4,7 +4,7 @@ const router = express.Router();
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const InventoryHistory = require("../models/InventoryHistory");
-const { protect, adminOnly } = require("../middlewares/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 // 📊 ADMIN: FETCH SALES PERFORMANCE AND INVENTORY SHORTAGES REPORTS (Protected: Admins Only)
 router.get("/dashboard-summary", protect, adminOnly, async (req, res) => {
