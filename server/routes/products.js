@@ -4,7 +4,7 @@ const router = express.Router();
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 const Brand = require("../models/Brand");
-const { protect, adminOnly } = require("../middlewares/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 //  1. CLIENT CATALOG QUERY (Supports Search Filters by Name, Category, or Brand)
 router.get("/", async (req, res) => {

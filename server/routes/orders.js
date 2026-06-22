@@ -4,7 +4,7 @@ const router = express.Router();
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const InventoryHistory = require("../models/InventoryHistory");
-const { protect, adminOnly } = require("../middlewares/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 //  1. CUSTOMER: PLACE NEW ORDER ONLINE (Protected)
 router.post("/", protect, async (req, res) => {

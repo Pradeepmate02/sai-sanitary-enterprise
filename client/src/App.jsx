@@ -1,35 +1,51 @@
 // src/App.jsx
+
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
 import "./App.css";
 
 // Customer Facing Layout Components
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Categories from "./components/Categories";
-import Products from "./components/Products";
-import WhyChoose from "./components/WhyChoose";
-import Testimonials from "./components/Testimonials";
-import Newsletter from "./components/Newsletter";
-import Footer from "./components/Footer";
+import Navbar from "./customer/components/Navbar";
+import Hero from "./customer/components/Hero";
+import Categories from "./customer/components/Categories";
+import Products from "./customer/components/Products";
+import WhyChoose from "./customer/components/WhyChoose";
+import Testimonials from "./customer/components/Testimonials";
+import Newsletter from "./customer/components/Newsletter";
+import Footer from "./customer/components/Footer";
 
 // Customer Pages
-import LoginPage from "./LoginPage";
-import CartPage from "./CartPage";
-import WishlistPage from "./WishlistPage";
-import BuyNowPage from "./BuyNowPage";
-import NotFoundPage  from "./NotFoundPage";
-import AboutPage from "./AboutPage";
-import ContactPage from "./ContactPage";
-import ProfilePage from "./ProfilePage";
-import OrdersPage from "./OrdersPage";
-import ProductDetails from "./ProductDetails";
-import CategoryPage from "./CategoryPage";
+import LoginPage from "./customer/pages/LoginPage";
+import CartPage from "./customer/pages/CartPage";
+import WishlistPage from "./customer/pages/WishlistPage";
+import BuyNowPage from "./customer/pages/BuyNowPage";
+import AboutPage from "./customer/pages/AboutPage";
+import ContactPage from "./customer/pages/ContactPage";
+import ProductDetails from "./customer/pages/ProductDetails";
+import CategoryPage from "./customer/pages/CategoryPage";
 
-// Admin Imports
+// Future Pages (not created yet)
+// import ProfilePage from "./customer/pages/ProfilePage";
+// import OrdersPage from "./customer/pages/OrdersPage";
+// import NotFoundPage from "./customer/pages/NotFoundPage";
+
+// Admin
 import DashboardLanding from "./admin/pages/DashboardLanding";
 
-function Home({ search, setSearch, cart, setCart, wishlist, setWishlist }) {
+function Home({
+  search,
+  setSearch,
+  cart,
+  setCart,
+  wishlist,
+  setWishlist,
+}) {
   return (
     <>
       <Navbar
@@ -39,8 +55,10 @@ function Home({ search, setSearch, cart, setCart, wishlist, setWishlist }) {
         setCart={setCart}
         wishlist={wishlist}
       />
+
       <Hero />
       <Categories />
+
       <Products
         search={search}
         cart={cart}
@@ -48,6 +66,7 @@ function Home({ search, setSearch, cart, setCart, wishlist, setWishlist }) {
         wishlist={wishlist}
         setWishlist={setWishlist}
       />
+
       <WhyChoose />
       <Testimonials />
       <Newsletter />
@@ -59,13 +78,13 @@ function Home({ search, setSearch, cart, setCart, wishlist, setWishlist }) {
 function App() {
   const [search, setSearch] = useState("");
 
-  // CART PERSISTENCE STATE ENGINE
+  // Cart Persistence
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // WISHLIST PERSISTENCE STATE ENGINE
+  // Wishlist Persistence
   const [wishlist, setWishlist] = useState(() => {
     const savedWishlist = localStorage.getItem("wishlist");
     return savedWishlist ? JSON.parse(savedWishlist) : [];
@@ -82,7 +101,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* PUBLIC CUSTOMER STOREFRONT PATHS */}
+        {/* Home */}
         <Route
           path="/"
           element={
@@ -97,6 +116,7 @@ function App() {
           }
         />
 
+        {/* Product Details */}
         <Route
           path="/product/:name"
           element={
@@ -110,6 +130,7 @@ function App() {
           }
         />
 
+        {/* Category */}
         <Route
           path="/category/:category"
           element={
@@ -124,6 +145,7 @@ function App() {
           }
         />
 
+        {/* Cart */}
         <Route
           path="/cart"
           element={
@@ -137,6 +159,7 @@ function App() {
           }
         />
 
+        {/* Wishlist */}
         <Route
           path="/wishlist"
           element={
@@ -151,6 +174,7 @@ function App() {
           }
         />
 
+        {/* Buy Now */}
         <Route
           path="/buy"
           element={
@@ -163,6 +187,7 @@ function App() {
           }
         />
 
+        {/* Login */}
         <Route
           path="/login"
           element={
@@ -174,16 +199,21 @@ function App() {
           }
         />
 
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/orders" element={<OrdersPage />} />
+        {/* Static Pages */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
 
-        {/* UNSECURED ADMINISTRATIVE PATH */}
+        {/* Future Routes */}
+        {/*
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/orders" element={<OrdersPage />} />
+        */}
+
+        {/* Admin */}
         <Route path="/admin" element={<DashboardLanding />} />
 
-        {/* GLOBAL CATCH-ALL ERROR ROW CONTAINER */}
-        <Route path="*" element={<NotFoundPage />} />
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

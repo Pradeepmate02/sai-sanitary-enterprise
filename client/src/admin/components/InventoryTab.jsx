@@ -4,32 +4,50 @@ import "./InventoryTab.css";
 
 function InventoryTab({ products, refreshProducts, brands, categories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProduct, setNewProduct] = useState({ name: "", brand: brands[0] || "", category: categories[0] || "", price: "", stock: "" });
+  
+  const [newProduct, setNewProduct] = useState({ 
+    name: "", 
+    description: "",
+    brand: brands[0] || "", 
+    category: categories[0] || "", 
+    price: "", 
+    stock: "",
+    minStockThreshold: "15",
+    imageUrl: "" 
+  });
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!newProduct.name || !newProduct.price || !newProduct.stock) return alert("Please fill all fields");
+    if (!newProduct.name || !newProduct.price || !newProduct.stock) return alert("Please fill all required fields");
+
+    const token = localStorage.getItem("userToken");
 
     try {
-      //  DATABASE INTEGRATION: POST raw JSON values straight into your backend Express router
       const response = await fetch("http://localhost:5000/api/products", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` 
+        },
         body: JSON.stringify({
           name: newProduct.name,
-          brand: newProduct.brand,
-          category: newProduct.category,
+          description: newProduct.description,
+          brandName: newProduct.brand, 
+          categoryName: newProduct.category, 
           price: newProduct.price,
-          stock: newProduct.stock
+          stock: newProduct.stock,
+          minStockThreshold: newProduct.minStockThreshold,
+          images: newProduct.imageUrl ? [newProduct.imageUrl] : [] 
         })
       });
 
-      if (response.ok) {
-        await refreshProducts(); // Tell parent frame to synchronize state straight from MongoDB
-        setNewProduct({ name: "", brand: brands[0] || "", category: categories[0] || "", price: "", stock: "" }); 
+          if (response.ok) {
+        await refreshProducts(); 
+        setNewProduct({ name: "", description: "", brand: brands[0] || "", category: categories[0] || "", price: "", stock: "", minStockThreshold: "15", imageUrl: "" }); 
         setIsModalOpen(false); 
       } else {
-        alert("Failed to preserve inventory record execution on master nodes");
+        const errorData = await response.json();
+        alert(errorData.message || "Failed to preserve inventory record execution on master nodes");
       }
     } catch (error) {
       console.error("Transmission Error:", error);
@@ -37,16 +55,20 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
   };
 
   const handleDelete = async (skuId) => {
-    if (!window.confirm(`Are you certain you want to purge profile node [ ${skuId} ]?`)) return;
+    if (!window.confirm(`Are you certain you want to permanently purge product node [ ${skuId} ]?`)) return;
+
+    const token = localStorage.getItem("userToken");
 
     try {
-      // 🗑️ DATABASE INTEGRATION: Issue a targeted DELETE parameter matching the SKU string key
       const response = await fetch(`http://localhost:5000/api/products/${skuId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
-        refreshProducts(); // Force structural re-fetch sync execution loops
+        refreshProducts(); 
       } else {
         alert("Purge request rejected by remote validation engine");
       }
@@ -82,16 +104,22 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
               <tr key={index}>
                 <td><code>{product.skuId}</code></td>
                 <td><strong>{product.name}</strong></td>
-                <td><span className="admin-table-brand-tag">{product.brand}</span></td>
-                <td>{product.category}</td>
+                <td><span className="admin-table-brand-tag">{product.brand?.name || "N/A"}</span></td>
+                <td>{product.category?.name || "N/A"}</td>
                 <td>₹{parseFloat(product.price).toLocaleString("en-IN")}</td>
                 <td>
-                  <span className={`stock-indicator ${parseInt(product.stock) === 0 ? "out" : parseInt(product.stock) < 15 ? "low" : "good"}`}>
-                    {parseInt(product.stock) === 0 ? "Out of Stock 🚨" : `${product.stock} units`}
+                  <span className={`stock-indicator ${
+                    parseInt(product.stock) === 0 
+                      ? "out" 
+                      : parseInt(product.stock) <= parseInt(product.minStockThreshold || 15) 
+                      ? "low" 
+                      : "good"
+                  }`}>
+                    {parseInt(product.stock) === 0 ? "Out of Stock" : `${product.stock} units`}
                   </span>
                 </td>
                 <td>
-                  <button className="admin-delete-inline-btn" onClick={() => handleDelete(product.skuId)}>Remove 🗑️</button>
+                  <button className="admin-delete-inline-btn" onClick={() => handleDelete(product.skuId)}>Remove</button>
                 </td>
               </tr>
             ))}
@@ -101,13 +129,25 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
 
       {isModalOpen && (
         <div className="admin-modal-overlay">
-          <div className="admin-modal-card">
+          <div className="admin-modal-card" style={{ maxWidth: "520px" }}>
             <h3>Add New Product Catalog Entry</h3>
             <form onSubmit={handleFormSubmit}>
+              
               <div className="form-group">
-                <label>Product Title / Name</label>
-                <input type="text" placeholder="e.g., Heavy Duty Pipe" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} />
+                <label>Product Title / Name *</label>
+                <input type="text" placeholder="e.g., Heavy Duty Pipe" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} required />
               </div>
+
+              <div className="form-group">
+                <label>Detailed Description</label>
+                <textarea 
+                  style={{ padding: "10px 14px", fontSize: "14px", border: "1px solid #e2e8f0", borderRadius: "6px", outline: "none", resize: "none", height: "60px", fontFamily: "inherit" }}
+                  placeholder="Enter components usage rules, dimension tracking matrices..."
+                  value={newProduct.description}
+                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                />
+              </div>
+
               <div className="form-row">
                 <div className="form-group">
                   <label>Manufacturer / Brand</label>
@@ -122,16 +162,29 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
                   </select>
                 </div>
               </div>
+
               <div className="form-row">
                 <div className="form-group">
-                  <label>Price (INR)</label>
-                  <input type="number" placeholder="Value in ₹" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} />
+                  <label>Price (INR) *</label>
+                  <input type="number" min="0" placeholder="Value in ₹" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} required />
                 </div>
                 <div className="form-group">
-                  <label>Initial Stock</label>
-                  <input type="number" placeholder="Quantity" value={newProduct.stock} onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} />
+                  <label>Initial Stock *</label>
+                  <input type="number" min="0" placeholder="Quantity" value={newProduct.stock} onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} required />
                 </div>
               </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Low-Stock Alert Level</label>
+                  <input type="number" min="0" placeholder="Default is 15" value={newProduct.minStockThreshold} onChange={(e) => setNewProduct({ ...newProduct, minStockThreshold: e.target.value })} />
+                </div>
+                <div className="form-group">
+                  <label>Product Image Link URL</label>
+                  <input type="url" placeholder="https://example.com/image.jpg" value={newProduct.imageUrl} onChange={(e) => setNewProduct({ ...newProduct, imageUrl: e.target.value })} />
+                </div>
+              </div>
+
               <div className="modal-actions">
                 <button type="button" className="modal-cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
                 <button type="submit" className="modal-submit-btn">Save Product</button>
