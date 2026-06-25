@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["admin", "staff", "user"],
-      default: "admin" // Automatically defaults to admin clearance for your setup portal
+      default: "user" // Automatically defaults to admin clearance for your setup portal
     }
   },
   { 

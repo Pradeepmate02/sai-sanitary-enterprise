@@ -25,6 +25,13 @@ wishlist=[]
 }){
 
 const navigate=useNavigate();
+const user = JSON.parse(localStorage.getItem("user"));
+
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.reload();
+};
 
 const [menuOpen,setMenuOpen]=
 useState(false);
@@ -102,17 +109,34 @@ Water Tanks
 
 <div className="navRight">
 
-<button
-className="loginBtn"
-onClick={()=>
-navigate("/login")
+{
+user ? (
+  <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+
+    <span>
+      Hello, {user.name}
+    </span>
+
+    <button
+      className="loginBtn"
+      onClick={logout}
+    >
+      Logout
+    </button>
+
+  </div>
+) : (
+  <button
+    className="loginBtn"
+    onClick={()=>
+      navigate("/login")
+    }
+  >
+    <FaUserCircle/>
+    Login
+  </button>
+)
 }
->
-
-<FaUserCircle/>
-Login
-
-</button>
 
 <div className="searchBox">
 
