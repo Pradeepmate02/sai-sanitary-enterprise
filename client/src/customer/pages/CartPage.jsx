@@ -14,7 +14,7 @@ search,
 setSearch
 
 }){
-
+console.log(cart);
 const navigate=
 useNavigate();
 
@@ -254,13 +254,9 @@ navigate(
 }
 
 >
-
 <img
-
-src={item.image}
-
-alt={item.name}
-
+  src={item.image || item.thumbnail}
+  alt={item.name}
 />
 
 <div>
@@ -330,15 +326,17 @@ remove(item.name);
 <button
 onClick={(e)=>{
 
-e.stopPropagation();
+  e.stopPropagation();
 
-navigate("/buy");
+  navigate("/buy",{
+    state:{
+      buyNowItem:item
+    }
+  });
 
 }}
 >
-
-Buy Now
-
+  Buy Now
 </button>
 
 </div>

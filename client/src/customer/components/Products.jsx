@@ -35,6 +35,7 @@ const imageMap = {
 
 
 
+import products from "../../products";
 
 function Products({
 
@@ -63,16 +64,8 @@ const [showPrice,setShowPrice]=
 useState(false);
 const [products, setProducts] = useState([]);
 
-useEffect(() => {
-  axios
-    .get("http://localhost:5000/api/products")
-    .then((response) => {
-      setProducts(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching products:", error);
-    });
-}, []);
+
+
 
 
 
@@ -104,31 +97,30 @@ search.toLowerCase()
 
 const matchesCategory =
 category === "All" ||
-p.category?.name === category;
-let matchesPrice=true;
+p.category.toLowerCase() === category.toLowerCase();
+let matchesPrice = true;
 
+switch(priceFilter){
 
-if(priceFilter==="Low"){
+case "Low":
+matchesPrice = p.price < 2500;
+break;
 
-matchesPrice=
-p.price<2500;
+case "Medium":
+matchesPrice =
+p.price >= 2500 &&
+p.price <= 4000;
+break;
 
-}
+case "High":
+matchesPrice = p.price > 4000;
+break;
 
-if(priceFilter==="Medium"){
-
-matchesPrice=
-p.price>=2500 &&
-p.price<=4000;
-
-}
-
-if(priceFilter==="High"){
-
-matchesPrice=
-p.price>4000;
+default:
+matchesPrice = true;
 
 }
+
 
 return(
 
@@ -335,7 +327,14 @@ zIndex:"10"
 >
 
 
-{["All","Shower","Sink","Tap","Pipe","Pipe Fitting","Tank","Motor","Shopdish"]
+{[
+ "All",
+ "bathroom",
+ "kitchen",
+ "pipes",
+ "motors",
+ "water-tanks"
+]
 .map((item)=>(
 
 <p
@@ -476,12 +475,9 @@ padding:"10px"
 <div className="productGrid">
 
 {
-filteredProducts
-  .slice(0, 6) // Show only first 6 products
-  .map((p, index) => {
+filteredProducts.slice(0,6).map((p,index)=>{
 
 const inWishlist =
-
 wishlist.some(
 item => item.name === p.name
 );
@@ -496,7 +492,7 @@ key={index}
 <div className="imageContainer">
 
 <img
-  src={imageMap[p.name]}
+  src={p.thumbnail}
   alt={p.name}
 />
 
