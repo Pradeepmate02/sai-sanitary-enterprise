@@ -41,6 +41,30 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+// GET SINGLE PRODUCT BY NAME
+router.get("/:name", async (req, res) => {
+  try {
+    const product = await Product.findOne({
+      name: decodeURIComponent(req.params.name),
+    })
+      .populate("category", "name")
+      .populate("brand", "name");
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
 // ➕ 2. ADMIN CREATION: SPAWN NEW PRODUCT (Protected: Admins Only)
 router.post("/", protect, adminOnly, async (req, res) => {
   try {

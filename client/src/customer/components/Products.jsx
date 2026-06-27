@@ -1,17 +1,39 @@
-import React,{useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
-import water1 from "../assets/products/water-pipe/water1.jpg";
 import shower1 from "../assets/products/shower/shower1.jpg";
 import sink1 from "../assets/products/sink/sink1.jpg";
-import motor1 from "../assets/products/motor/motor1.jpg";
-import sub1 from "../assets/products/submersible-motor/sub1.jpg";
-import tank1 from "../assets/products/plastic-tank/tank1.jpg";
-import sintex1 from "../assets/products/sintex-tank/sintex1.jpg";
 import tap1 from "../assets/products/tap/tap1.jpg";
+import motor1 from "../assets/products/motor/motor1.jpg";
+import sintex1 from "../assets/products/sintex-tank/sintex1.jpg";
+import tank1 from "../assets/products/plastic-tank/tank1.jpg";
 import fitting1 from "../assets/products/pipe-fitting/fitting1.jpg";
 import dish1 from "../assets/products/shopdish/shopdish1.jpg";
+import water1 from "../assets/products/water-pipe/water1.jpg";
+import sub1 from "../assets/products/submersible-motor/sub1.jpg";
+
+const imageMap = {
+  "Premium Shower": shower1,
+  "Luxury Sink": sink1,
+  "Modern Tap": tap1,
+  "PVC Pipe": pvc1,
+  "CPVC Pipe": pvc1,
+  "Water Pipe": water1,
+  "Pipe Fittings": fitting1,
+  "Water Motor": motor1,
+  "Submersible Motor": sub1,
+  "Plastic Tank": tank1,
+  "Sintex Tank": sintex1,
+  "Overhead Shower": shower1,
+  "Wall Mixer Tap": tap1,
+  "Supreme Water Tank": tank1,
+  "Shopdish": dish1
+};
+
+
 
 
 function Products({
@@ -39,53 +61,18 @@ useState(false);
 
 const [showPrice,setShowPrice]=
 useState(false);
+const [products, setProducts] = useState([]);
 
-
-const products=[
-
-{
-name:"Premium Shower",
-price:4999,
-category:"Shower",
-image:shower1
-},
-
-{
-name:"Luxury Sink",
-price:3999,
-category:"Sink",
-image:sink1
-},
-
-{
-name:"Modern Tap",
-price:1999,
-category:"Tap",
-image:tap1
-},
-
-{
-name:"PVC Pipe",
-price:999,
-category:"Pipe",
-image:pvc1
-},
-
-{
-name:"Water Motor",
-price:5999,
-category:"Motor",
-image:motor1
-},
-
-{
-name:"Sintex Tank",
-price:6999,
-category:"Tank",
-image:sintex1
-}
-
-];
+useEffect(() => {
+  axios
+    .get("http://localhost:5000/api/products")
+    .then((response) => {
+      setProducts(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching products:", error);
+    });
+}, []);
 
 
 
@@ -115,12 +102,9 @@ p.name
 search.toLowerCase()
 );
 
-const matchesCategory=
-
-category==="All"
-||
-p.category===category;
-
+const matchesCategory =
+category === "All" ||
+p.category?.name === category;
 let matchesPrice=true;
 
 
@@ -492,19 +476,17 @@ padding:"10px"
 <div className="productGrid">
 
 {
+filteredProducts
+  .slice(0, 6) // Show only first 6 products
+  .map((p, index) => {
 
-filteredProducts.map((p,index)=>{
-
-const inWishlist=
+const inWishlist =
 
 wishlist.some(
-
-item=>
-item.name===p.name
-
+item => item.name === p.name
 );
 
-return(
+return (
 
 <div
 className="productCard"
@@ -514,8 +496,8 @@ key={index}
 <div className="imageContainer">
 
 <img
-src={p.image}
-alt={p.name}
+  src={imageMap[p.name]}
+  alt={p.name}
 />
 
 <button
