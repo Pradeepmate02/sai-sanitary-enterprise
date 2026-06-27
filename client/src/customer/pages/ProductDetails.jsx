@@ -1,7 +1,7 @@
-import React,{useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./ProductDetails.css";
-import {useParams,useNavigate} from "react-router-dom";
-
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
@@ -393,41 +393,161 @@ src={selectedImage}
 alt=""
 />
 
+function ProductDetails({
+  search,
+  setSearch,
+  cart,
+  setCart,
+}) {
+  const { name } = useParams();
+  const navigate = useNavigate();
+
+  const [product, setProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:5000/api/products/${encodeURIComponent(name)}`
+      )
+      .then((res) => {
+  const image =
+    res.data.images?.length > 0 && res.data.images[0]
+      ? res.data.images[0]
+      : productImages[res.data.name];
+
+  setProduct({
+    ...res.data,
+    image,
+  });
+
+  setSelectedImage(image);
+})
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [name]);
+
+  if (!product) {
+    return <h2>Loading...</h2>;
+  }
+
+  function addToCart() {
+    const existing = cart.find(
+      (item) => item.name === product.name
+    );
+
+    if (existing) {
+      setCart(
+        cart.map((item) =>
+          item.name === product.name
+            ? {
+                ...item,
+                quantity: item.quantity + quantity,
+              }
+            : item
+        )
+      );
+    } else {
+      setCart([
+        ...cart,
+        {
+          name: product.name,
+          price: product.price,
+          image: selectedImage,
+          quantity,
+        },
+      ]);
+    }
+  }
+
+  return (
+    <>
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        cart={cart}
+      />
+
+      <div className="productDetailContainer">
+
+        <div className="leftProduct">
+
+         <div className="thumbContainer">
+  <img
+    src={selectedImage}
+    alt={product.name}
+    className="thumb activeThumb"
+  />
 </div>
 
+         <div className="mainImage">
+  <img
+    src={selectedImage}
+    alt={product.name}
+  />
 </div>
 
-<div className="rightProduct">
+        </div>
 
-<p className="category">
+        <div className="rightProduct">
 
-PREMIUM COLLECTION
+          <p className="category">
+            {product.category?.name}
+          </p>
 
-</p>
+          <h1>{product.name}</h1>
 
-<h1>{name}</h1>
+          <h2>₹{product.price}</h2>
 
-<h2>₹{product.price}</h2>
+          <p>{product.description}</p>
 
-<p>{product.description}</p>
+          <div className="featureBox">
+            <h3>Product Details</h3>
 
-<div className="featureBox">
+            <ul>
+              <li>✓ Brand : {product.brand?.name}</li>
+              <li>✓ Stock : {product.stock}</li>
+              <li>✓ SKU : {product.skuId}</li>
+              <li>✓ Premium Quality</li>
+            </ul>
 
-<h3>Features</h3>
+          </div>
 
-<ul>
+          <div className="quantityBox">
 
-{
+            <button
+              onClick={() =>
+                setQuantity(Math.max(1, quantity - 1))
+              }
+            >
+              -
+            </button>
 
-product.features.map(
+            <span>{quantity}</span>
 
-(item,index)=>
+            <button
+              onClick={() =>
+                setQuantity(quantity + 1)
+              }
+            >
+              +
+            </button>
 
-<li key={index}>
+          </div>
 
-✓ {item}
+          <div className="productButtons">
 
-</li>
+            <button
+              className="buyBtn"
+              onClick={() => {
+                addToCart();
+                navigate("/buy");
+              }}
+            >
+              Buy Now
+            </button>
 
 )
 
@@ -496,10 +616,13 @@ product.features.map(
 
 </div>
 
-</>
+          </div>
 
-)
+        </div>
 
+      </div>
+    </>
+  );
 }
 
 export default ProductDetails;

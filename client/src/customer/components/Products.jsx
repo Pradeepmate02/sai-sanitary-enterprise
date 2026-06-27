@@ -1,17 +1,39 @@
-import React,{useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
-import water1 from "../assets/products/water-pipe/water1.jpg";
 import shower1 from "../assets/products/shower/shower1.jpg";
 import sink1 from "../assets/products/sink/sink1.jpg";
-import motor1 from "../assets/products/motor/motor1.jpg";
-import sub1 from "../assets/products/submersible-motor/sub1.jpg";
-import tank1 from "../assets/products/plastic-tank/tank1.jpg";
-import sintex1 from "../assets/products/sintex-tank/sintex1.jpg";
 import tap1 from "../assets/products/tap/tap1.jpg";
+import motor1 from "../assets/products/motor/motor1.jpg";
+import sintex1 from "../assets/products/sintex-tank/sintex1.jpg";
+import tank1 from "../assets/products/plastic-tank/tank1.jpg";
 import fitting1 from "../assets/products/pipe-fitting/fitting1.jpg";
 import dish1 from "../assets/products/shopdish/shopdish1.jpg";
+import water1 from "../assets/products/water-pipe/water1.jpg";
+import sub1 from "../assets/products/submersible-motor/sub1.jpg";
+
+const imageMap = {
+  "Premium Shower": shower1,
+  "Luxury Sink": sink1,
+  "Modern Tap": tap1,
+  "PVC Pipe": pvc1,
+  "CPVC Pipe": pvc1,
+  "Water Pipe": water1,
+  "Pipe Fittings": fitting1,
+  "Water Motor": motor1,
+  "Submersible Motor": sub1,
+  "Plastic Tank": tank1,
+  "Sintex Tank": sintex1,
+  "Overhead Shower": shower1,
+  "Wall Mixer Tap": tap1,
+  "Supreme Water Tank": tank1,
+  "Shopdish": dish1
+};
+
+
 
 import products from "../../products";
 
@@ -40,6 +62,7 @@ useState(false);
 
 const [showPrice,setShowPrice]=
 useState(false);
+const [products, setProducts] = useState([]);
 
 
 
@@ -459,7 +482,7 @@ wishlist.some(
 item => item.name === p.name
 );
 
-return(
+return (
 
 <div
 className="productCard"
