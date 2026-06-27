@@ -30,6 +30,8 @@ import ContactPage from "./customer/pages/ContactPage";
 import ProductDetails from "./customer/pages/ProductDetails";
 import CategoryPage from "./customer/pages/CategoryPage";
 
+import RegisterPage from "./customer/pages/RegisterPage";
+
 // Future Pages (not created yet)
 // import ProfilePage from "./customer/pages/ProfilePage";
 // import OrdersPage from "./customer/pages/OrdersPage";
@@ -198,6 +200,17 @@ function App() {
             />
           }
         />
+
+        <Route
+  path="/register"
+  element={
+    <RegisterPage
+      search={search}
+      setSearch={setSearch}
+      cart={cart}
+    />
+  }
+/>
 
         {/* Static Pages */}
         <Route path="/about" element={<AboutPage />} />

@@ -1,141 +1,112 @@
-import React,{useState} from "react";
+
+import React, { useState } from "react";
 import "./LoginPage.css";
 import Navbar from "../components/Navbar";
-import {
-FaFacebook,
-FaGoogle
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { FaFacebook, FaGoogle } from "react-icons/fa";
+
+
+function LoginPage({ search, setSearch, cart = [] }) {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
+
+      alert("Login Successful!");
+      navigate("/");
+    } catch (error) {
+  console.log("Login Error:", error.response?.data);
+
+  alert(
+    error.response?.data?.message ||
+    "Login Failed"
+  );
 }
-from "react-icons/fa";
+  };
 
-function LoginPage({
+  return (
+    <>
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        cart={cart}
+      />
 
-search,
-setSearch,
-cart=[]
+      <div className="loginContainer">
+        <div className="loginCard">
+          <h2>Login</h2>
 
-}){
+          <input
+            type="email"
+            className="loginInput"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+          />
 
-const [mobile,setMobile]=
-useState("");
+          <input
+            type="password"
+            className="loginInput"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+          />
 
-function sendOTP(){
-
-if(mobile.length!==10){
-
-alert(
-"Enter valid mobile number"
-);
-
-return;
-
-}
-
-alert(
-`OTP sent to ${mobile}`
-);
-
-}
-
-return(
-
-<>
-
-<Navbar
-search={search}
-setSearch={setSearch}
-cart={cart}
-/>
-
-<div
-className="loginContainer"
+          <button
+  className="otpBtn"
+  onClick={handleLogin}
 >
-
-<div
-className="loginCard"
->
-
-<h2>
-
-Login or Signup
-
-</h2>
-
-<div
-className="mobileBox"
->
-
-<span>
-
-+91
-
-</span>
-
-<input
-type="text"
-placeholder="Enter Mobile Number"
-value={mobile}
-maxLength="10"
-onChange={(e)=>
-setMobile(
-e.target.value
-.replace(/\D/g,"")
-)
-}
-/>
-
-</div>
-
-<button
-className="otpBtn"
-onClick={sendOTP}
->
-
-Send OTP
-
+  Login
 </button>
 
-<div
-className="divider"
->
+<p style={{ textAlign: "center", marginBottom: "20px" }}>
+  Don't have an account?{" "}
+  <Link to="/register">
+    Register
+  </Link>
+</p>
 
-<span>
-
-or login with
-
-</span>
-
+<div className="divider">
+  <span>or continue with</span>
 </div>
 
-<div
-className="socialBtns"
->
+          <div className="socialBtns">
+            <button disabled>
+              <FaFacebook />
+              Facebook
+            </button>
 
-<button>
-
-<FaFacebook/>
-
-Facebook
-
-</button>
-
-<button>
-
-<FaGoogle/>
-
-Google
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</>
-
-)
-
+            <button disabled>
+              <FaGoogle />
+              Google
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default LoginPage;
+
