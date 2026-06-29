@@ -27,6 +27,18 @@ function CartPage({ cart, setCart, search, setSearch }) {
     setCart(cart.filter((item) => item.name !== name));
   }
 
+  // 🔒 ADDED: Reusable authentication guard function
+  const checkAuthAndNavigate = (targetPath, statePayload = null) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first to proceed with your order!");
+      navigate("/login");
+      return false;
+    }
+    navigate(targetPath, statePayload);
+    return true;
+  };
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
@@ -115,10 +127,11 @@ function CartPage({ cart, setCart, search, setSearch }) {
                       ❌
                     </button>
 
+                    {/* 🛠️ UPDATED: Added authorization check to Buy Now route */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate("/checkout", {
+                        checkAuthAndNavigate("/checkout", {
                           state: { buyNowItem: item },
                         });
                       }}
@@ -130,15 +143,15 @@ function CartPage({ cart, setCart, search, setSearch }) {
               </div>
             ))}
 
-            {/* Cleaned section containing layout class links to match your theme */}
             <div className="cartSummarySection">
               <h1>Total: ₹{total}</h1>
               
+              {/* 🛠️ UPDATED: Added authorization check to Proceed to Checkout button */}
               <button
                 className="btn"
-                onClick={() => navigate("/checkout")}
+                onClick={() => checkAuthAndNavigate("/checkout")}
               >
-                proceed
+                Proceed to Checkout ➔
               </button>
             </div>
           </>
