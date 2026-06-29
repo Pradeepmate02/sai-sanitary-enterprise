@@ -27,7 +27,7 @@ function CartPage({ cart, setCart, search, setSearch }) {
     setCart(cart.filter((item) => item.name !== name));
   }
 
-  // 🔒 ADDED: Reusable authentication guard function
+  // 🔒 FIXED: Reusable authentication guard function
   const checkAuthAndNavigate = (targetPath, statePayload = null) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -35,7 +35,13 @@ function CartPage({ cart, setCart, search, setSearch }) {
       navigate("/login");
       return false;
     }
-    navigate(targetPath, statePayload);
+    
+    // Check if a payload exists before passing it to avoid silent route crashes
+    if (statePayload) {
+      navigate(targetPath, statePayload);
+    } else {
+      navigate(targetPath); // Clean redirection for standard cart checkouts
+    }
     return true;
   };
 
@@ -127,7 +133,6 @@ function CartPage({ cart, setCart, search, setSearch }) {
                       ❌
                     </button>
 
-                    {/* 🛠️ UPDATED: Added authorization check to Buy Now route */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -146,7 +151,6 @@ function CartPage({ cart, setCart, search, setSearch }) {
             <div className="cartSummarySection">
               <h1>Total: ₹{total}</h1>
               
-              {/* 🛠️ UPDATED: Added authorization check to Proceed to Checkout button */}
               <button
                 className="btn"
                 onClick={() => checkAuthAndNavigate("/checkout")}
