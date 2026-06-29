@@ -1,11 +1,9 @@
-
 import React, { useState } from "react";
 import "./LoginPage.css";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
-
 
 function LoginPage({ search, setSearch, cart = [] }) {
   const navigate = useNavigate();
@@ -15,30 +13,38 @@ function LoginPage({ search, setSearch, cart = [] }) {
 
   const handleLogin = async () => {
     try {
+      // Swapped out hardcoded url with your dynamic Vite env property lane
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/auth/login`,
         {
           email,
           password,
         }
       );
 
+      // Save credentials safely to your app cache
       localStorage.setItem("token", response.data.token);
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
+      localStorage.setItem("userRole", response.data.user.role);
 
       alert("Login Successful!");
-      navigate("/");
-    } catch (error) {
-  console.log("Login Error:", error.response?.data);
 
-  alert(
-    error.response?.data?.message ||
-    "Login Failed"
-  );
-}
+      // 🔄 AUTOMATIC ROLE-BASED REDIRECTION INTERCEPTOR
+      if (response.data.user.role === "admin") {
+        navigate("/admin"); // Sends admin directly to System Control Terminal
+      } else {
+        navigate("/"); // Sends normal users to customer storefront
+      }
+    } catch (error) {
+      console.log("Login Error:", error.response?.data);
+      alert(
+        error.response?.data?.message ||
+        "Login Failed"
+      );
+    }
   };
 
   return (
@@ -58,9 +64,7 @@ function LoginPage({ search, setSearch, cart = [] }) {
             className="loginInput"
             placeholder="Enter Email"
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <input
@@ -68,28 +72,21 @@ function LoginPage({ search, setSearch, cart = [] }) {
             className="loginInput"
             placeholder="Enter Password"
             value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button
-  className="otpBtn"
-  onClick={handleLogin}
->
-  Login
-</button>
+          <button className="otpBtn" onClick={handleLogin}>
+            Login
+          </button>
 
-<p style={{ textAlign: "center", marginBottom: "20px" }}>
-  Don't have an account?{" "}
-  <Link to="/register">
-    Register
-  </Link>
-</p>
+          <p style={{ textAlign: "center", marginBottom: "20px" }}>
+            Don't have an account?{" "}
+            <Link to="/register">Register</Link>
+          </p>
 
-<div className="divider">
-  <span>or continue with</span>
-</div>
+          <div className="divider">
+            <span>or continue with</span>
+          </div>
 
           <div className="socialBtns">
             <button disabled>
@@ -109,4 +106,3 @@ function LoginPage({ search, setSearch, cart = [] }) {
 }
 
 export default LoginPage;
-
