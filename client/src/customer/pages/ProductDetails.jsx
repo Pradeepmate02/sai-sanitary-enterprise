@@ -4,448 +4,87 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
+// Local image fallback map matrix configuration
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
-import pvc2 from "../assets/products/pvc-pipe/pvc2.jpg";
-import pvc3 from "../assets/products/pvc-pipe/pvc3.jpg";
-import pvc4 from "../assets/products/pvc-pipe/pvc4.jpg";
-import pvc5 from "../assets/products/pvc-pipe/pvc5.jpg";
-
-/* WATER PIPE */
 import water1 from "../assets/products/water-pipe/water1.jpg";
-import water2 from "../assets/products/water-pipe/water2.jpg";
-import water3 from "../assets/products/water-pipe/water3.jpg";
-import water4 from "../assets/products/water-pipe/water4.jpg";
-import water5 from "../assets/products/water-pipe/water5.jpg";
-
-/* SHOWER */
 import shower1 from "../assets/products/shower/shower1.jpg";
-import shower2 from "../assets/products/shower/shower2.jpg";
-import shower3 from "../assets/products/shower/shower3.jpg";
-import shower4 from "../assets/products/shower/shower4.jpg";
-import shower5 from "../assets/products/shower/shower5.jpg";
-
-/* SINK */
 import sink1 from "../assets/products/sink/sink1.jpg";
-import sink2 from "../assets/products/sink/sink2.jpg";
-import sink3 from "../assets/products/sink/sink3.jpg";
-import sink4 from "../assets/products/sink/sink4.jpg";
-import sink5 from "../assets/products/sink/sink5.jpg";
-
-/* MOTOR */
 import motor1 from "../assets/products/motor/motor1.jpg";
-import motor2 from "../assets/products/motor/motor2.jpg";
-import motor3 from "../assets/products/motor/motor3.jpg";
-import motor4 from "../assets/products/motor/motor4.jpg";
-import motor5 from "../assets/products/motor/motor5.jpg";
-
-/* SUBMERSIBLE MOTOR */
 import sub1 from "../assets/products/submersible-motor/sub1.jpg";
-import sub2 from "../assets/products/submersible-motor/sub2.jpg";
-import sub3 from "../assets/products/submersible-motor/sub3.jpg";
-import sub4 from "../assets/products/submersible-motor/sub4.jpg";
-import sub5 from "../assets/products/submersible-motor/sub5.jpg";
-
-/* PLASTIC TANK */
 import tank1 from "../assets/products/plastic-tank/tank1.jpg";
-import tank2 from "../assets/products/plastic-tank/tank2.jpg";
-import tank3 from "../assets/products/plastic-tank/tank3.jpg";
-import tank4 from "../assets/products/plastic-tank/tank4.jpg";
-import tank5 from "../assets/products/plastic-tank/tank5.jpg";
-
-/* SINTEX TANK */
 import sintex1 from "../assets/products/sintex-tank/sintex1.jpg";
-import sintex2 from "../assets/products/sintex-tank/sintex2.jpg";
-import sintex3 from "../assets/products/sintex-tank/sintex3.jpg";
-import sintex4 from "../assets/products/sintex-tank/sintex4.jpg";
-import sintex5 from "../assets/products/sintex-tank/sintex5.jpg";
-
-/* TAP */
 import tap1 from "../assets/products/tap/tap1.jpg";
-import tap2 from "../assets/products/tap/tap2.jpg";
-import tap3 from "../assets/products/tap/tap3.jpg";
-import tap4 from "../assets/products/tap/tap4.jpg";
-import tap5 from "../assets/products/tap/tap5.jpg";
-
-/* PIPE FITTINGS */
 import fitting1 from "../assets/products/pipe-fitting/fitting1.jpg";
-import fitting2 from "../assets/products/pipe-fitting/fitting2.jpg";
-import fitting3 from "../assets/products/pipe-fitting/fitting3.jpg";
-import fitting4 from "../assets/products/pipe-fitting/fitting4.jpg";
-import fitting5 from "../assets/products/pipe-fitting/fitting5.jpg";
-
-/* SHOPDISH */
 import dish1 from "../assets/products/shopdish/shopdish1.jpg";
-import dish2 from "../assets/products/shopdish/shopdish2.jpg";
-import dish3 from "../assets/products/shopdish/shopdish3.jpg";
-import dish4 from "../assets/products/shopdish/shopdish4.jpg";
-import dish5 from "../assets/products/shopdish/shopdish5.jpg";
 
-function ProductDetails({
-
-search,
-setSearch,
-cart,
-setCart
-
-}){
-
-const products={
-
-"PVC Pipe":{
-price:999,
-images:[pvc1,pvc2,pvc3,pvc4,pvc5],
-description:"High quality PVC pipe suitable for water supply.",
-features:[
-"Leak resistant",
-"Strong material",
-"Long life",
-"Easy installation",
-"Premium quality"
-]
-},
-
-"Water Pipe":{
-price:1499,
-images:[water1,water2,water3,water4,water5],
-description:"Premium water pipe.",
-features:[
-"Strong material",
-"Leak resistant",
-"Durable",
-"Easy installation",
-"Long life"
-]
-},
-
-"Premium Shower":{
-price:4999,
-images:[shower1,shower2,shower3,shower4,shower5],
-description:"Premium shower system.",
-features:[
-"Premium quality",
-"Water saving",
-"Modern finish",
-"5 year warranty"
-]
-},
-
-"Luxury Sink":{
-price:2999,
-images:[sink1,sink2,sink3,sink4,sink5],
-description:"Luxury sink.",
-features:[
-"Premium ceramic",
-"Scratch resistant",
-"Elegant finish",
-"Easy installation"
-]
-},
-
-"Water Motor":{
-price:5999,
-images:[motor1,motor2,motor3,motor4,motor5],
-description:"High performance water motor.",
-features:[
-"Power saving",
-"Low noise",
-"Strong motor",
-"Long life"
-]
-},
-
-"Submersible Motor":{
-price:7999,
-images:[sub1,sub2,sub3,sub4,sub5],
-description:"Powerful submersible motor.",
-features:[
-"High power",
-"Low electricity use",
-"Durable",
-"Long life"
-]
-},
-
-"Plastic Tank":{
-price:3499,
-images:[tank1,tank2,tank3,tank4,tank5],
-description:"Durable plastic tank.",
-features:[
-"Leak proof",
-"Strong body",
-"UV protection",
-"Long life"
-]
-},
-
-"Sintex Tank":{
-price:6999,
-images:[
-sintex1,
-sintex2,
-sintex3,
-sintex4,
-sintex5
-],
-description:"Premium Sintex tank.",
-features:[
-"Leak proof",
-"Large capacity",
-"Strong body",
-"Long life"
-]
-},
-
-"Modern Tap":{
-price:1999,
-images:[
-tap1,
-tap2,
-tap3,
-tap4,
-tap5
-],
-description:"Premium water tap with modern design.",
-features:[
-"Rust resistant",
-"Smooth flow",
-"Premium finish",
-"Long life"
-]
-},
-
-"Pipe Fittings":{
-price:799,
-images:[
-fitting1,
-fitting2,
-fitting3,
-fitting4,
-fitting5
-],
-description:"High quality plumbing fittings.",
-features:[
-"Leak resistant",
-"Durable",
-"Easy installation",
-"Strong material"
-]
-},
-
-"Shopdish":{
-price:2499,
-images:[
-dish1,
-dish2,
-dish3,
-dish4,
-dish5
-],
-description:"Premium shop dish.",
-features:[
-"Elegant design",
-"Scratch resistant",
-"Easy cleaning",
-"Premium quality"
-]
-}
-
+const productImagesFallback = {
+  "PVC Pipe": pvc1,
+  "Water Pipe": water1,
+  "Premium Shower": shower1,
+  "Luxury Sink": sink1,
+  "Water Motor": motor1,
+  "Submersible Motor": sub1,
+  "Plastic Tank": tank1,
+  "Sintex Tank": sintex1,
+  "Modern Tap": tap1,
+  "Pipe Fittings": fitting1,
+  "Shopdish": dish1,
 };
 
-const {name}=useParams();
-
-const navigate=useNavigate();
-
-const product=products[name];
-
-if(!product){
-
-return <h1>Product Not Found</h1>
-
-}
-
-const [selectedImage,setSelectedImage]=
-useState(product.images[0]);
-
-const [quantity,setQuantity]=useState(1);
-const [toast,setToast] = useState("");
-
-function showToast(message){
-
-  setToast(message);
-
-  setTimeout(() => {
-    setToast("");
-  }, 2000);
-
-}
-
-function addToCart(){
-
-  const existing =
-    cart.find(item => item.name === name);
-
-  if(existing){
-
-    setCart(
-
-      cart.map(item =>
-
-        item.name === name
-
-        ? {
-            ...item,
-            quantity:item.quantity + quantity
-          }
-
-        : item
-
-      )
-
-    );
-
-  }
-
-  else{
-
-    setCart([
-
-      ...cart,
-
-      {
-        name,
-        price:product.price,
-        image:selectedImage,
-        quantity
-      }
-
-    ]);
-
-  }
-
-  if(existing){
-  showToast("🛒 Cart updated");
-}else{
-  showToast("🛒 Product added to cart");
-}
-}
-
-return(
-
-<>
-
-
-{toast && (
-
-  <div className="toast">
-
-    {toast}
-
-  </div>
-
-)}
-
-<Navbar
-search={search}
-setSearch={setSearch}
-cart={cart}
-/>
-
-<div className="productDetailContainer">
-
-<div className="leftProduct">
-
-<div className="thumbContainer">
-
-{
-
-product.images.map(
-
-(img,index)=>(
-
-<img
-key={index}
-src={img}
-alt=""
-className={
-selectedImage===img
-?
-"thumb activeThumb"
-:
-"thumb"
-}
-onClick={()=>
-setSelectedImage(img)
-}
-/>
-
-)
-
-)
-
-}
-
-</div>
-
-<div className="mainImage">
-
-<img
-src={selectedImage}
-alt=""
-/>
-
-function ProductDetails({
-  search,
-  setSearch,
-  cart,
-  setCart,
-}) {
+function ProductDetails({ search, setSearch, cart, setCart }) {
   const { name } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [toast, setToast] = useState("");
+
+  function showToast(message) {
+    setToast(message);
+    setTimeout(() => {
+      setToast("");
+    }, 2000);
+  }
 
   useEffect(() => {
     axios
-      .get(
-        `http://localhost:5000/api/products/${encodeURIComponent(name)}`
-      )
+      .get(`${import.meta.env.VITE_API_URL}/products/${encodeURIComponent(name)}`)
       .then((res) => {
-  const image =
-    res.data.images?.length > 0 && res.data.images[0]
-      ? res.data.images[0]
-      : productImages[res.data.name];
+        // Resolve database path string or pull from local file mapping rules
+        const image =
+          res.data.images && res.data.images.length > 0 && res.data.images[0]
+            ? res.data.images[0]
+            : productImagesFallback[res.data.name] || pvc1;
 
-  setProduct({
-    ...res.data,
-    image,
-  });
-
-  setSelectedImage(image);
-})
+        setProduct({
+          ...res.data,
+          image,
+        });
+        setSelectedImage(image);
+      })
       .catch((err) => {
-        console.log(err);
+        console.error("Failed to pull live product tracking matrix:", err);
       });
   }, [name]);
 
   if (!product) {
-    return <h2>Loading...</h2>;
+    return (
+      <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", fontWeight: "600", color: "#0F766E" }}>
+        <i className="fa-solid fa-circle-notch fa-spin" style={{ marginRight: "10px" }}></i>
+        Resolving Catalog Item Node...
+      </div>
+    );
   }
 
   function addToCart() {
-    const existing = cart.find(
-      (item) => item.name === product.name
-    );
+    const existing = cart.find((item) => item.name === product.name);
 
     if (existing) {
       setCart(
         cart.map((item) =>
           item.name === product.name
-            ? {
-                ...item,
-                quantity: item.quantity + quantity,
-              }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         )
       );
@@ -453,6 +92,7 @@ function ProductDetails({
       setCart([
         ...cart,
         {
+          _id: product._id, // Required backend identifier cross-link
           name: product.name,
           price: product.price,
           image: selectedImage,
@@ -460,166 +100,89 @@ function ProductDetails({
         },
       ]);
     }
+    showToast("🛒 Cart configuration updated cleanly");
   }
 
   return (
     <>
-      <Navbar
-        search={search}
-        setSearch={setSearch}
-        cart={cart}
-      />
+      {toast && <div className="toast">{toast}</div>}
+
+      <Navbar search={search} setSearch={setSearch} cart={cart} setCart={setCart} />
 
       <div className="productDetailContainer">
-
+        {/* LEFT COLUMN: MULTI-IMAGE VIEWS */}
         <div className="leftProduct">
+          <div className="thumbContainer">
+            {product.images && product.images.length > 0 ? (
+              product.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt=""
+                  className={selectedImage === img ? "thumb activeThumb" : "thumb"}
+                  onClick={() => setSelectedImage(img)}
+                />
+              ))
+            ) : (
+              <img src={selectedImage} alt="" className="thumb activeThumb" />
+            )}
+          </div>
 
-         <div className="thumbContainer">
-  <img
-    src={selectedImage}
-    alt={product.name}
-    className="thumb activeThumb"
-  />
-</div>
-
-         <div className="mainImage">
-  <img
-    src={selectedImage}
-    alt={product.name}
-  />
-</div>
-
+          <div className="mainImage">
+            <img src={selectedImage} alt={product.name} />
+          </div>
         </div>
 
+        {/* RIGHT COLUMN: CORE PRODUCT DETAILS METRICS */}
         <div className="rightProduct">
-
-          <p className="category">
-            {product.category?.name}
-          </p>
-
+          <p className="category">{product.category?.name || "General Catalog"}</p>
           <h1>{product.name}</h1>
-
           <h2>₹{product.price}</h2>
-
-          <p>{product.description}</p>
+          <p className="description">{product.description}</p>
 
           <div className="featureBox">
-            <h3>Product Details</h3>
-
+            <h3>Product Specifications</h3>
             <ul>
-              <li>✓ Brand : {product.brand?.name}</li>
-              <li>✓ Stock : {product.stock}</li>
-              <li>✓ SKU : {product.skuId}</li>
-              <li>✓ Premium Quality</li>
+              <li>✓ Brand Profile: {product.brand?.name || "Verified Vendor"}</li>
+              <li>✓ Warehouse Stock Status: {product.stock > 0 ? `${product.stock} units remaining` : "Out of Stock"}</li>
+              <li>✓ Material SKU: {product.skuId}</li>
+              <li>✓ Heavy-Duty Structural Compliance Certified</li>
             </ul>
-
           </div>
 
+          {/* QUANTITY CONFIGURE MODULE */}
           <div className="quantityBox">
-
-            <button
-              onClick={() =>
-                setQuantity(Math.max(1, quantity - 1))
-              }
-            >
-              -
-            </button>
-
+            <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
             <span>{quantity}</span>
-
-            <button
-              onClick={() =>
-                setQuantity(quantity + 1)
-              }
-            >
-              +
-            </button>
-
+            <button onClick={() => setQuantity(quantity + 1)}>+</button>
           </div>
 
+          {/* TRANSITION CONTROLLER LAYOUT TRACKS */}
           <div className="productButtons">
-
             <button
               className="buyBtn"
               onClick={() => {
-                addToCart();
-                navigate("/buy");
+                // Pass order metrics directly to checkout state tracking variables
+                navigate("/checkout", {
+                  state: {
+                    buyNowItem: {
+                      _id: product._id,
+                      name: product.name,
+                      price: product.price,
+                      image: selectedImage,
+                      quantity: quantity,
+                    },
+                  },
+                });
               }}
             >
               Buy Now
             </button>
-
-)
-
-}
-
-</ul>
-
-</div>
-
-<div className="quantityBox">
-
-  <button
-    onClick={()=>
-      setQuantity(
-        Math.max(1, quantity - 1)
-      )
-    }
-  >
-    -
-  </button>
-
-  <span>{quantity}</span>
-
-  <button
-    onClick={()=>
-      setQuantity(quantity + 1)
-    }
-  >
-    +
-  </button>
-
-</div>
-
-
-
-<div className="productButtons">
-
-  <button
-  className="buyBtn"
-  onClick={()=>{
-    navigate("/buy", {
-      state:{
-        buyNowItem:{
-          name,
-          price: product.price,
-          image: selectedImage,
-          quantity
-        }
-      }
-    });
-  }}
->
-  Buy Now
-</button>
-
-  <button
-    className="cartBtn"
-    onClick={addToCart}
-  >
-    Add To Cart
-  </button>
-
-</div>
-
-</div>
-
-</div>
-
+            <button className="cartBtn" onClick={addToCart}>
+              Add To Cart
+            </button>
           </div>
-
         </div>
-
       </div>
     </>
   );

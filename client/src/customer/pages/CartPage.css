@@ -108,6 +108,44 @@ box-shadow:
 );
 }
 
+/* ==========================================================================
+   ADDED: CHECKOUT SUMMARY SECTION STYLE RULES
+   ========================================================================== */
+.cartSummarySection {
+  background: white;
+  padding: 35px;
+  border-radius: 25px;
+  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.cartSummarySection h1 {
+  font-size: 38px;
+  color: #333;
+  margin: 0;
+  text-align: right;
+}
+
+/* Extends .btn specifically for a heavy-action checkout workflow */
+.cartSummarySection .btn {
+  padding: 16px 50px;
+  font-size: 18px;
+  border-radius: 15px;
+  background: #0F766E;
+}
+
+.cartSummarySection .btn:hover {
+  background: #134E4A;
+  box-shadow: 0 12px 30px rgba(15,118,110,.25);
+}
+
+/* ==========================================================================
+   MEDIA QUERIES (UPDATED FOR RESPONSIVENESS)
+   ========================================================================== */
 @media(max-width:768px){
 
 .cartPage{
@@ -145,6 +183,24 @@ justify-content:center;
 
 .cartButtons button{
 font-size:15px;
+}
+
+/* Responsive adjustment for checkout wrapper on phones */
+.cartSummarySection {
+  align-items: center;
+  padding: 25px;
+}
+
+.cartSummarySection h1 {
+  font-size: 28px;
+  text-align: center;
+}
+
+.cartSummarySection .btn {
+  width: 100%;
+  text-align: center;
+  padding: 14px 20px;
+  font-size: 16px;
 }
 
 }

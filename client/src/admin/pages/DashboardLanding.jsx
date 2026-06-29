@@ -15,7 +15,7 @@ export default function DashboardLanding() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   // 📥 ASYNCHRONOUS DATA PIPELINE ENGINE
   const fetchDashboardData = async () => {
