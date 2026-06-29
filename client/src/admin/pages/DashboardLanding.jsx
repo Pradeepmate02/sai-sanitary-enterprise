@@ -4,10 +4,12 @@ import OverviewTab from "../components/OverviewTab";
 import InventoryTab from "../components/InventoryTab";
 import OrdersTab from "../components/OrdersTab";
 import SettingsTab from "../components/SettingsTab";
+import { useNavigate } from "react-router-dom"; // ➕ IMPORTED NAVIGATE FOR REDIRECTION
 import "./DashboardShell.css";
 
 export default function DashboardLanding() {
   const [activeTab, setActiveTab] = useState("overview");
+  const navigate = useNavigate(); // ➕ INITIALIZED NAVIGATE HOOK
 
   //  LIVE STATE HOOKS (Initialized empty, waiting for MongoDB data)
   const [products, setProducts] = useState([]);
@@ -15,7 +17,7 @@ export default function DashboardLanding() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   // 📥 ASYNCHRONOUS DATA PIPELINE ENGINE
   const fetchDashboardData = async () => {
@@ -48,6 +50,17 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // 🛠️ ADDED: LOGOUT HANDLER FUNCTION
+  const handleLogout = () => {
+    // Clear all auth metrics from local browser session memory cache
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
+
+    // Route cleanly back to login panel template
+    navigate("/login");
+  };
 
   if (loading) {
     return (
@@ -85,7 +98,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
           </button>
         </nav>
 
-        <button className="admin-logout-btn">
+        {/* 🛠️ UPDATED: Linked handleLogout function to click listener */}
+        <button className="admin-logout-btn" onClick={handleLogout}>
           <i className="fa-solid fa-arrow-right-from-bracket"></i> Log Out
         </button>
       </aside>
