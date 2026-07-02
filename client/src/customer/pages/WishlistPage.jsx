@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./WishListPage.css";
 import Navbar from "../components/Navbar";
 import {useNavigate} from "react-router-dom";
 import {FaHeartBroken} from "react-icons/fa";
+import toast from "react-hot-toast";
 
 function WishlistPage({
 
@@ -16,17 +17,24 @@ setCart
 }){
 
 const navigate=useNavigate();
+useEffect(() => {
+  if (!localStorage.getItem("token")) {
+    navigate("/login", {
+      state: {
+        message: "Please login to view your wishlist.",
+        from: "/wishlist",
+      },
+    });
+  }
+}, [navigate]);
 
-function removeItem(name){
+function removeItem(name) {
 
-setWishlist(
+  setWishlist(
+    wishlist.filter(item => item.name !== name)
+  );
 
-wishlist.filter(
-item=>item.name!==name
-)
-
-);
-
+  toast.success("Item removed from wishlist");
 }
 
 function moveToCart(product){
@@ -84,6 +92,7 @@ item=>item.name!==product.name
 )
 
 );
+toast.success(`${product.name} moved to cart`);
 
 }
 

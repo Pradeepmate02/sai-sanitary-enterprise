@@ -19,6 +19,8 @@ import WhyChoose from "./customer/components/WhyChoose";
 import Testimonials from "./customer/components/Testimonials";
 import Newsletter from "./customer/components/Newsletter";
 import Footer from "./customer/components/Footer";
+import { Toaster } from "react-hot-toast";
+
 
 // Customer Pages
 import LoginPage from "./customer/pages/LoginPage";
@@ -102,6 +104,18 @@ function App() {
 
   return (
     <BrowserRouter>
+    <Toaster
+  position="top-center"
+  toastOptions={{
+    duration: 2500,
+    style: {
+      borderRadius: "10px",
+      background: "#0F766E",
+      color: "#fff",
+      fontWeight: "500",
+    },
+  }}
+/>
       <Routes>
         {/* Home */}
         <Route
@@ -200,6 +214,10 @@ function App() {
             />
           }
         />
+
+        
+
+  
 
         <Route
   path="/register"

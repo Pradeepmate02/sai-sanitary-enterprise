@@ -3,6 +3,7 @@ import "./ProductDetails.css";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 
 import productImages from "../utils/productImages";
@@ -46,35 +47,49 @@ function ProductDetails({
   if (!product) {
     return <h2>Loading...</h2>;
   }
-
+function isLoggedIn() {
+  return !!localStorage.getItem("token");
+}
   function addToCart() {
-    const existing = cart.find(
-      (item) => item.name === product.name
-    );
+  if (!isLoggedIn()) {
+  navigate("/login", {
+    state: {
+      message: "Please login to add products to your cart.",
+      from: `/product/${product.name}`,
+    },
+  });
+  return;
+}
 
-    if (existing) {
-      setCart(
-        cart.map((item) =>
-          item.name === product.name
-            ? {
-                ...item,
-                quantity: item.quantity + quantity,
-              }
-            : item
-        )
-      );
-    } else {
-      setCart([
-        ...cart,
-        {
-          name: product.name,
-          price: product.price,
-          image: selectedImage,
-          quantity,
-        },
-      ]);
-    }
+  const existing = cart.find(
+    (item) => item.name === product.name
+  );
+
+  if (existing) {
+    setCart(
+      cart.map((item) =>
+        item.name === product.name
+          ? {
+              ...item,
+              quantity: item.quantity + quantity,
+            }
+          : item
+      )
+    );
+  } else {
+    setCart([
+      ...cart,
+      {
+        name: product.name,
+        price: product.price,
+        image: selectedImage,
+        quantity,
+      },
+    ]);
   }
+  toast.success("Added to cart");
+}
+
 
   return (
     <>
@@ -154,14 +169,23 @@ function ProductDetails({
           <div className="productButtons">
 
             <button
-              className="buyBtn"
-              onClick={() => {
-                addToCart();
-                navigate("/buy");
-              }}
-            >
-              Buy Now
-            </button>
+  className="buyBtn"
+  onClick={() => {
+    if (!isLoggedIn()) {
+  navigate("/login", {
+  state: {
+    message: "Please login to add products to your cart.",
+    from: `/product/${product.name}`,
+  },
+});
+  return;
+}
+    addToCart();
+    navigate("/buy");
+  }}
+>
+  Buy Now
+</button>
 
             <button
               className="cartBtn"

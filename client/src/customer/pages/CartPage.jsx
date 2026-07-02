@@ -1,10 +1,12 @@
 import React from "react";
 import "./CartPage.css";
+import { useEffect } from "react";
 
 import {useNavigate}
 from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 function CartPage({
 
@@ -17,6 +19,16 @@ setSearch
 
 const navigate=
 useNavigate();
+useEffect(() => {
+  if (!localStorage.getItem("token")) {
+    navigate("/login", {
+  state: {
+    message: "Please login to view your cart.",
+    from: "/cart",
+  },
+});
+  }
+}, [navigate]);
 
 
 function increase(name){
@@ -75,23 +87,14 @@ item=>item.quantity>0
 }
 
 
-function remove(name){
+function remove(name) {
 
-setCart(
+  setCart(
+    cart.filter(item => item.name !== name)
+  );
 
-cart.filter(
-
-item=>
-
-item.name!==name
-
-)
-
-);
-
+ toast.success(`${name} removed from cart`);
 }
-
-
 const total=
 
 cart.reduce(

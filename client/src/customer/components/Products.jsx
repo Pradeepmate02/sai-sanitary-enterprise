@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import toast from "react-hot-toast";
+
 
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
 import shower1 from "../assets/products/shower/shower1.jpg";
@@ -48,7 +50,7 @@ setWishlist
 
 const navigate=useNavigate();
 
-const [toast,setToast]=useState("");
+
 
 const [category,setCategory]=
 useState("All");
@@ -76,17 +78,7 @@ useEffect(() => {
 
 
 
-function showToast(message){
 
-setToast(message);
-
-setTimeout(()=>{
-
-setToast("");
-
-},2000);
-
-}
 
 
 
@@ -140,125 +132,98 @@ matchesPrice
 
 });
 
-
-
-function addToCart(product){
-
-const existing=
-
-cart.find(
-item=>
-item.name===product.name
-);
-
-if(existing){
-
-setCart(
-
-cart.map(item=>
-
-item.name===product.name
-
-?
-
-{
-...item,
-quantity:item.quantity+1
+function isLoggedIn() {
+  return !!localStorage.getItem("token");
 }
 
-:
+function addToCart(product) {
 
-item
-
-)
-
-);
-
+  if (!isLoggedIn()) {
+  navigate("/login", {
+  state: {
+    message: "Please login to view your cart.",
+  from: window.location.pathname,
+  },
+});
+  return;
 }
 
-else{
+  const existing =
+    cart.find(item => item.name === product.name);
 
-setCart([
+  if (existing) {
 
-...cart,
+    setCart(
+      cart.map(item =>
+        item.name === product.name
+          ? {
+              ...item,
+              quantity: item.quantity + 1
+            }
+          : item
+      )
+    );
 
-{
-...product,
-quantity:1
+  } else {
+
+    setCart([
+      ...cart,
+      {
+        ...product,
+        quantity: 1
+      }
+    ]);
+
+  }
+
+  toast.success("Added to cart");
+  }   
+
+
+
+function toggleWishlist(product) {
+
+  if (!localStorage.getItem("token")) {
+    navigate("/login", {
+      state: {
+        message: "Please login to use your wishlist.",
+        from: window.location.pathname,
+      },
+    });
+    return;
+  }
+
+  const exists = wishlist.some(
+    item => item.name === product.name
+  );
+
+  if (exists) {
+
+    setWishlist(
+      wishlist.filter(
+        item => item.name !== product.name
+      )
+    );
+
+    toast.success(`${product.name} removed from wishlist`);
+
+  } else {
+
+    setWishlist([
+      ...wishlist,
+      product
+    ]);
+
+    toast.success(`${product.name} added to wishlist`);
+  }
 }
-
-]);
-
-}
-
-showToast("🛒 Added to cart");
-
-}
-
-
-
-function toggleWishlist(product){
-
-const exists=
-
-wishlist.find(
-
-item=>
-item.name===product.name
-
-);
-
-if(exists){
-
-setWishlist(
-
-wishlist.filter(
-
-item=>
-item.name!==product.name
-
-)
-
-);
-
-showToast(
-"❌ Removed from wishlist"
-);
-
-}
-
-else{
-
-setWishlist([
-
-...wishlist,
-product
-
-]);
-
-showToast(
-"❤️ Added to wishlist"
-);
-
-}
-
-}
-
 
 
 return(
 
 <section className="products">
 
-{toast &&
 
-<div className="toast">
-
-{toast}
-
-</div>
-
-}
 
 <h2>
 

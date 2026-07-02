@@ -124,3 +124,65 @@ outline:none;
 border-color:#0F766E;
 box-shadow:0 0 0 3px rgba(15,118,110,.1);
 }
+.loginMessage {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.successMessage {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+.errorMessage {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #ef4444;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+.otpBtn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.8;
+}
+.passwordContainer {
+  position: relative;
+  width: 100%;
+}
+
+.passwordContainer .loginInput {
+  width: 100%;
+  padding-right: 45px;
+  box-sizing: border-box;
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.passwordToggle:hover {
+  color: #0f766e;
+}
