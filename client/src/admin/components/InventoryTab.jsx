@@ -16,14 +16,18 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
     imageUrl: "" 
   });
 
+  // Dynamic API base URL resolution mapping rule
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price || !newProduct.stock) return alert("Please fill all required fields");
 
-    const token = localStorage.getItem("userToken");
+    // 🛠️ FIXED: Pulls token using the exact key defined during your login setup
+    const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
+      const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -41,7 +45,7 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
         })
       });
 
-          if (response.ok) {
+      if (response.ok) {
         await refreshProducts(); 
         setNewProduct({ name: "", description: "", brand: brands[0] || "", category: categories[0] || "", price: "", stock: "", minStockThreshold: "15", imageUrl: "" }); 
         setIsModalOpen(false); 
@@ -57,10 +61,11 @@ function InventoryTab({ products, refreshProducts, brands, categories }) {
   const handleDelete = async (skuId) => {
     if (!window.confirm(`Are you certain you want to permanently purge product node [ ${skuId} ]?`)) return;
 
-    const token = localStorage.getItem("userToken");
+    // 🛠️ FIXED: Pulls token using the exact key defined during your login setup
+    const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${skuId}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${skuId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`

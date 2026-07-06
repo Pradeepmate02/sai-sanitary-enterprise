@@ -31,13 +31,10 @@ import AboutPage from "./customer/pages/AboutPage";
 import ContactPage from "./customer/pages/ContactPage";
 import ProductDetails from "./customer/pages/ProductDetails";
 import CategoryPage from "./customer/pages/CategoryPage";
-
 import RegisterPage from "./customer/pages/RegisterPage";
 
-// Future Pages (not created yet)
-// import ProfilePage from "./customer/pages/ProfilePage";
-// import OrdersPage from "./customer/pages/OrdersPage";
-// import NotFoundPage from "./customer/pages/NotFoundPage";
+// ➕ IMPORT YOUR NEW CHECKOUT PAGE HERE
+import CheckoutPage from "./customer/pages/CheckoutPage"; 
 
 // Admin
 import DashboardLanding from "./admin/pages/DashboardLanding";
@@ -59,10 +56,8 @@ function Home({
         setCart={setCart}
         wishlist={wishlist}
       />
-
       <Hero />
       <Categories />
-
       <Products
         search={search}
         cart={cart}
@@ -70,7 +65,6 @@ function Home({
         wishlist={wishlist}
         setWishlist={setWishlist}
       />
-
       <WhyChoose />
       <Testimonials />
       <Newsletter />
@@ -175,6 +169,17 @@ function App() {
           }
         />
 
+        {/* ➕ ADD THE SECURED CHECKOUT ROUTE LINK HERE */}
+        <Route
+          path="/checkout"
+          element={
+            <CheckoutPage
+              cart={cart}
+              setCart={setCart}
+            />
+          }
+        />
+
         {/* Wishlist */}
         <Route
           path="/wishlist"
@@ -215,30 +220,21 @@ function App() {
           }
         />
 
-        
-
-  
-
+        {/* Register */}
         <Route
-  path="/register"
-  element={
-    <RegisterPage
-      search={search}
-      setSearch={setSearch}
-      cart={cart}
-    />
-  }
-/>
+          path="/register"
+          element={
+            <RegisterPage
+              search={search}
+              setSearch={setSearch}
+              cart={cart}
+            />
+          }
+        />
 
         {/* Static Pages */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
-
-        {/* Future Routes */}
-        {/*
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/orders" element={<OrdersPage />} />
-        */}
 
         {/* Admin */}
         <Route path="/admin" element={<DashboardLanding />} />

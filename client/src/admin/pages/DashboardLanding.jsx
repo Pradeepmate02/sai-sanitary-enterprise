@@ -4,10 +4,16 @@ import OverviewTab from "../components/OverviewTab";
 import InventoryTab from "../components/InventoryTab";
 import OrdersTab from "../components/OrdersTab";
 import SettingsTab from "../components/SettingsTab";
+import { useNavigate } from "react-router-dom"; 
 import "./DashboardShell.css";
 
 export default function DashboardLanding() {
   const [activeTab, setActiveTab] = useState("overview");
+  const navigate = useNavigate(); 
+
+  // 📝 ADDED: Dynamic profile state tracking
+  const [adminName, setAdminName] = useState("Admin");
+  const [initials, setInitials] = useState("A");
 
   //  LIVE STATE HOOKS (Initialized empty, waiting for MongoDB data)
   const [products, setProducts] = useState([]);
@@ -15,7 +21,7 @@ export default function DashboardLanding() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = "http://localhost:5000/api";
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   // 📥 ASYNCHRONOUS DATA PIPELINE ENGINE
   const fetchDashboardData = async () => {
@@ -47,7 +53,36 @@ export default function DashboardLanding() {
   // Run the data load loop exactly once when the component enters the DOM mount sequence
   useEffect(() => {
     fetchDashboardData();
+
+    // 👤 ADDED: Fetch and parse local user profile details dynamically
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && parsedUser.name) {
+          setAdminName(parsedUser.name);
+          
+          // Generate initials cleanly from full name string (e.g., "Pradeep Mate" -> "PM")
+          const nameParts = parsedUser.name.split(" ");
+          const calculatedInitials = nameParts.map(part => part[0]).join("").toUpperCase();
+          setInitials(calculatedInitials.slice(0, 2)); // Grab maximum of 2 initials
+        }
+      }
+    } catch (err) {
+      console.error("Failed parsing admin session profile logs:", err);
+    }
   }, []);
+
+  // 🛠️ ADDED: LOGOUT HANDLER FUNCTION
+  const handleLogout = () => {
+    // Clear all auth metrics from local browser session memory cache
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
+
+    // Route cleanly back to login panel template
+    navigate("/login");
+  };
 
   if (loading) {
     return (
@@ -64,9 +99,11 @@ export default function DashboardLanding() {
       <aside className="admin-sidebar">
         <div className="admin-profile-header">
           <div className="admin-avatar-circle">
-            <span className="admin-avatar-initials">PM</span>
+            {/* 🛠️ UPDATED: Renders initials dynamically */}
+            <span className="admin-avatar-initials">{initials}</span>
           </div>
-          <h6 className="admin-display-name">Pradeep Mate</h6>
+          {/* 🛠️ UPDATED: Renders full name dynamically */}
+          <h6 className="admin-display-name">{adminName}</h6>
           <p className="admin-display-role">Admin Portal</p>
         </div>
 
@@ -85,7 +122,7 @@ export default function DashboardLanding() {
           </button>
         </nav>
 
-        <button className="admin-logout-btn">
+        <button className="admin-logout-btn" onClick={handleLogout}>
           <i className="fa-solid fa-arrow-right-from-bracket"></i> Log Out
         </button>
       </aside>
@@ -106,7 +143,7 @@ export default function DashboardLanding() {
         {activeTab === "inventory" && (
           <InventoryTab 
             products={products} 
-            refreshProducts={fetchDashboardData} // Passed down to trigger automatic UI syncs on mutation
+            refreshProducts={fetchDashboardData} 
             brands={brands} 
             categories={categories} 
           />

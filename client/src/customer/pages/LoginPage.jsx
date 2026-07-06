@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import "./LoginPage.css";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import {
-  FaFacebook,
-  FaGoogle,
-  FaEye,
-  FaEyeSlash,
-} from "react-icons/fa";
-import toast from "react-hot-toast";
+import { useNavigate, Link } from "react-router-dom";
+import { FaFacebook, FaGoogle } from "react-icons/fa";
 
 function LoginPage({ search, setSearch, cart = [] }) {
   const navigate = useNavigate();
@@ -48,34 +42,37 @@ function LoginPage({ search, setSearch, cart = [] }) {
     setLoading(true);
 
     try {
+      // Swapped out hardcoded url with your dynamic Vite env property lane
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/auth/login`,
         {
           email: email.trim(),
           password,
         }
       );
 
+      // Save credentials safely to your app cache
       localStorage.setItem("token", response.data.token);
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
+      localStorage.setItem("userRole", response.data.user.role);
 
-      toast.success("Login Successful!");
+      alert("Login Successful!");
 
-      setTimeout(() => {
-        navigate(location.state?.from || "/");
-      }, 800);
-
+      // 🔄 AUTOMATIC ROLE-BASED REDIRECTION INTERCEPTOR
+      if (response.data.user.role === "admin") {
+        navigate("/admin"); // Sends admin directly to System Control Terminal
+      } else {
+        navigate("/"); // Sends normal users to customer storefront
+      }
     } catch (error) {
       console.log("Login Error:", error.response?.data);
-
-      toast.error(
-        error.response?.data?.message || "Login Failed"
+      alert(
+        error.response?.data?.message ||
+        "Login Failed"
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -105,35 +102,21 @@ function LoginPage({ search, setSearch, cart = [] }) {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <div className="passwordContainer">
-  <input
-    type={showPassword ? "text" : "password"}
-    className="loginInput"
-    placeholder="Enter Password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-  />
+          <input
+            type="password"
+            className="loginInput"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-  <span
-    className="passwordToggle"
-    onClick={() => setShowPassword(!showPassword)}
-  >
-    {showPassword ? <FaEyeSlash /> : <FaEye />}
-  </span>
-</div>
-          <button
-            className="otpBtn"
-            onClick={handleLogin}
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Login"}
+          <button className="otpBtn" onClick={handleLogin}>
+            Login
           </button>
 
           <p style={{ textAlign: "center", marginBottom: "20px" }}>
             Don't have an account?{" "}
-            <Link to="/register">
-              Register
-            </Link>
+            <Link to="/register">Register</Link>
           </p>
 
           <div className="divider">

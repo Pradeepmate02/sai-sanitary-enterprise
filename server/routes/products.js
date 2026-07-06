@@ -6,7 +6,7 @@ const Category = require("../models/Category");
 const Brand = require("../models/Brand");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-//  1. CLIENT CATALOG QUERY (Supports Search Filters by Name, Category, or Brand)
+// 1. CLIENT CATALOG QUERY (Supports Search Filters by Name, Category, or Brand)
 router.get("/", async (req, res) => {
   try {
     const { search, category, brand } = req.query;
@@ -40,7 +40,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Failed to pull catalog records", error: error.message });
   }
 });
-
 
 // GET SINGLE PRODUCT BY NAME
 router.get("/:name", async (req, res) => {
@@ -78,9 +77,9 @@ router.post("/", protect, adminOnly, async (req, res) => {
       return res.status(400).json({ message: "Specified Category or Brand does not exist inside active parameters" });
     }
 
-    // Compute automatic incremental SKU sequence tags
-    const count = await Product.countDocuments();
-    const skuId = `PROD-00${count + 1}`;
+    // 🛠️ FIXED: Replaced count query with a timestamp + random salt combination to avoid unique index duplication drops
+    const uniqueId = Math.floor(1000 + Math.random() * 9000); 
+    const skuId = `PROD-${Date.now().toString().slice(-4)}${uniqueId}`;
 
     const newAsset = await Product.create({
       skuId,
@@ -88,14 +87,15 @@ router.post("/", protect, adminOnly, async (req, res) => {
       description,
       brand: targetBrand._id,
       category: targetCategory._id,
-      price: parseFloat(price),
-      stock: parseInt(stock),
+      price: parseFloat(price) || 0,
+      stock: parseInt(stock) || 0,
       minStockThreshold: minStockThreshold ? parseInt(minStockThreshold) : 15,
       images: images || []
     });
 
     res.status(201).json({ message: "Product saved to database node", asset: newAsset });
   } catch (error) {
+    // Enhanced error mapping back to client alert popup windows
     res.status(400).json({ message: "Data validation error rejected", error: error.message });
   }
 });
@@ -143,7 +143,7 @@ router.put("/:skuId", protect, adminOnly, async (req, res) => {
   }
 });
 
-//  4. ADMIN ACTION: PURGE PRODUCT FROM COLLECTION (Protected: Admins Only)
+// 4. ADMIN ACTION: PURGE PRODUCT FROM COLLECTION (Protected: Admins Only)
 router.delete("/:skuId", protect, adminOnly, async (req, res) => {
   try {
     const targetAsset = await Product.findOneAndDelete({ skuId: req.params.skuId });

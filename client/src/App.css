@@ -378,6 +378,9 @@ transition:.4s;
 display:flex;
 flex-direction:column;
 height:100%;
+
+max-width:350px;
+margin:auto;
 }
 
 .productCard:hover{

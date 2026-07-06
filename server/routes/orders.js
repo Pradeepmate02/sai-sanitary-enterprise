@@ -1,15 +1,145 @@
+// // server/routes/orders.js
+// const express = require("express");
+// const router = express.Router();
+// const axios = require("axios");
+// const Order = require("../models/Order");
+// const Product = require("../models/Product");
+// const { protect, adminOnly } = require("../middleware/authMiddleware");
+
+// // Helper function to get Shiprocket Token
+// async function getShiprocketToken() {
+//   try {
+//     const response = await axios.post("https://apiv2.shiprocket.in/v1/external/auth/login", {
+//       email: process.env.SHIPROCKET_EMAIL,
+//       password: process.env.SHIPROCKET_PASSWORD
+//     });
+//     return response.data.token;
+//   } catch (error) {
+//     console.error("Shiprocket Auth Failed:", error.message);
+//     return null;
+//   }
+// }
+
+// // CUSTOMER: PLACE NEW ORDER ONLINE WITH SHIPROCKET LNK
+// router.post("/", protect, async (req, res) => {
+//   try {
+//     const { items, shippingAddress, paymentMethod } = req.body;
+
+//     if (!items || items.length === 0) {
+//       return res.status(400).json({ message: "Cart checkout failed: Shopping cart is empty" });
+//     }
+
+//     let calculatedTotal = 0;
+//     const verifiedItems = [];
+//     const shiprocketOrderItems = [];
+
+//     for (const item of items) {
+//       const dbProduct = await Product.findById(item.product);
+//       if (!dbProduct) {
+//         return res.status(404).json({ message: `Product reference link ${item.product} no longer exists` });
+//       }
+
+//       calculatedTotal += dbProduct.price * item.quantity;
+
+//       verifiedItems.push({
+//         product: dbProduct._id,
+//         name: dbProduct.name,
+//         quantity: item.quantity,
+//         priceAtPurchase: dbProduct.price
+//       });
+
+//       shiprocketOrderItems.push({
+//         name: dbProduct.name,
+//         sku: dbProduct.skuId || `SKU-${dbProduct._id}`,
+//         units: item.quantity,
+//         selling_price: dbProduct.price
+//       });
+//     }
+
+//     // Provision new order inside local MongoDB tracking
+//     const newOrder = await Order.create({
+//       user: req.user._id,
+//       items: verifiedItems,
+//       totalAmount: calculatedTotal,
+//       shippingAddress,
+//       paymentMethod,
+//       paymentStatus: paymentMethod === "UPI" ? "Paid" : "Pending" // For UPI, handle gate confirmation flow
+//     });
+
+//     // Integrated Shiprocket Manifest Generation
+//     const token = await getShiprocketToken();
+//     if (token) {
+//       try {
+//         const shiprocketPayload = {
+//           order_id: newOrder._id.toString(),
+//           order_date: new Date().toISOString().split("T")[0],
+//           pickup_location: "Primary Warehouse", // Must match your verified Shiprocket pickup terminal profile name
+//           billing_customer_name: shippingAddress.fullName,
+//           billing_last_name: "",
+//           billing_address: shippingAddress.addressLine,
+//           billing_city: shippingAddress.city,
+//           billing_pincode: shippingAddress.postalCode,
+//           billing_state: shippingAddress.state,
+//           billing_country: "India",
+//           billing_email: req.user.email || "customer@store.com",
+//           billing_phone: shippingAddress.phone,
+//           shipping_is_billing: true,
+//           order_items: shiprocketOrderItems,
+//           payment_method: paymentMethod === "COD" ? "COD" : "Prepaid",
+//           sub_total: calculatedTotal,
+//           length: 10, // Default fallback dimensions (can be dynamic per product later)
+//           width: 10,
+//           height: 10,
+//           weight: 0.5
+//         };
+
+//         const srResponse = await axios.post(
+//           "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
+//           shiprocketPayload,
+//           { headers: { Authorization: `Bearer ${token}` } }
+//         );
+
+//         if (srResponse.data && srResponse.data.order_id) {
+//           newOrder.shiprocketOrderId = srResponse.data.order_id;
+//           newOrder.shiprocketShipmentId = srResponse.data.shipment_id;
+//           await newOrder.save();
+//         }
+//       } catch (srErr) {
+//         console.error("Shiprocket Order Generation Skipped:", srErr.message);
+//       }
+//     }
+
+//     res.status(201).json({ message: "Order placed successfully", order: newOrder });
+//   } catch (error) {
+//     res.status(500).json({ message: "Order checkout pipeline crashed", error: error.message });
+//   }
+// });
+
+// // ADMIN: VIEW ALL INBOUND CUSTOMER ORDERS
+// router.get("/admin/all", protect, adminOnly, async (req, res) => {
+//   try {
+//     const registry = await Order.find()
+//       .populate("user", "name email")
+//       .sort({ createdAt: -1 });
+//     res.status(200).json(registry);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+// module.exports = router;
+
 // server/routes/orders.js
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order");
 const Product = require("../models/Product");
-const InventoryHistory = require("../models/InventoryHistory");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-//  1. CUSTOMER: PLACE NEW ORDER ONLINE (Protected)
+// CUSTOMER: PLACE NEW ORDER ONLINE (Demo Configuration — Shiprocket Bypassed)
 router.post("/", protect, async (req, res) => {
   try {
-    const { items, shippingAddress } = req.body;
+    const { items, shippingAddress, paymentMethod } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "Cart checkout failed: Shopping cart is empty" });
@@ -18,15 +148,14 @@ router.post("/", protect, async (req, res) => {
     let calculatedTotal = 0;
     const verifiedItems = [];
 
-    // Verify values against current database records to prevent pricing fraud
+    // 1. Structural Verification: Cross-reference catalog IDs directly in MongoDB
     for (const item of items) {
       const dbProduct = await Product.findById(item.product);
       if (!dbProduct) {
         return res.status(404).json({ message: `Product reference link ${item.product} no longer exists` });
       }
 
-      const itemTotal = dbProduct.price * item.quantity;
-      calculatedTotal += itemTotal;
+      calculatedTotal += dbProduct.price * item.quantity;
 
       verifiedItems.push({
         product: dbProduct._id,
@@ -36,98 +165,45 @@ router.post("/", protect, async (req, res) => {
       });
     }
 
-    // Provision new order entry tracking record
+    // 2. Local Document Creation: Write finalized manifest directly to your cloud nodes
     const newOrder = await Order.create({
-      user: req.user._id, // Tied securely from decrypted JWT payload tokens
+      user: req.user._id,
       items: verifiedItems,
       totalAmount: calculatedTotal,
-      shippingAddress
+      shippingAddress,
+      paymentMethod,
+      paymentStatus: paymentMethod === "UPI" ? "Paid" : "Pending",
+      status: "Pending", // Keeps it sitting under your admin actionable overview grids
+      
+      // 🛠️ MOCK METRICS: Instantly updates UI tracking dashboards without waiting for external API calls
+      shiprocketOrderId: `DEMO-SR-${Math.floor(100000 + Math.random() * 900000)}`,
+      shiprocketShipmentId: `DEMO-SS-${Math.floor(100000 + Math.random() * 900000)}`,
+      shiprocketAWB: paymentMethod === "UPI" ? `AWB-${Math.floor(100000000 + Math.random() * 900000000)}` : ""
     });
 
-    console.log(` NOTIFICATION ALERT: A new order [ ${newOrder._id} ] has been placed by customer account.`);
-    res.status(201).json({ message: "Order placed successfully", order: newOrder });
+    console.log(`✨ Demo Order Created Successfully in Database Node. ID: ${newOrder._id}`);
+
+    res.status(201).json({ 
+      message: "Order placed successfully", 
+      order: newOrder 
+    });
   } catch (error) {
-    res.status(500).json({ message: "Order checkout pipeline crashed", error: error.message });
+    res.status(500).json({ 
+      message: "Order checkout pipeline crashed", 
+      error: error.message 
+    });
   }
 });
 
-//  2. ADMIN: VIEW ALL INBOUND CUSTOMER ORDERS (Protected: Admins Only)
+// ADMIN: VIEW ALL INBOUND CUSTOMER ORDERS
 router.get("/admin/all", protect, adminOnly, async (req, res) => {
   try {
     const registry = await Order.find()
       .populate("user", "name email")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }); // Pulls freshest purchases straight to the top of your layout
     res.status(200).json(registry);
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-});
-
-//  3. CUSTOMER: VIEW OWN ACCOUNTS ORDER STATUS TRACES (Protected)
-router.get("/my-orders", protect, async (req, res) => {
-  try {
-    const history = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
-    res.status(200).json(history);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// 4. ADMIN: ACCEPT / DECLINE ORDERS WITH AUTOMATIC STOCK DEDUCTIONS
-router.patch("/:orderId/status", protect, adminOnly, async (req, res) => {
-  try {
-    const { status } = req.body; // Expects "Accepted", "Declined", "Dispatched", "Delivered"
-    const order = await Order.findById(req.params.orderId);
-
-    if (!order) {
-      return res.status(404).json({ message: "Target order record tracking token missing" });
-    }
-
-    // Boundary check to block repeating stock deductions if order was already approved
-    if (status === "Accepted" && order.status !== "Accepted") {
-      
-      // Step through items to verify stock availability before changing parameters
-      for (const item of order.items) {
-        const dbProduct = await Product.findById(item.product);
-        if (!dbProduct || dbProduct.stock < item.quantity) {
-          return res.status(400).json({ 
-            message: `Cannot accept order. Asset [ ${item.name} ] has insufficient warehouse stock reserves.` 
-          });
-        }
-      }
-
-      // Safe to proceed: Deduct units and log structural history footprints
-      for (const item of order.items) {
-        const dbProduct = await Product.findById(item.product);
-        
-        dbProduct.stock -= item.quantity; // Decrease stock count parameter rules
-        await dbProduct.save();
-
-        // Requirement: Generate low-stock alerts when inventory falls below minimum thresholds
-        if (dbProduct.stock <= dbProduct.minStockThreshold) {
-          console.log(` LOW-STOCK ALERT: Material asset [ ${dbProduct.name} ] has dropped down to ${dbProduct.stock} items remaining.`);
-        }
-
-        // Requirement: Maintain inventory history tracking logs
-        await InventoryHistory.create({
-          product: dbProduct._id,
-          skuId: dbProduct.skuId,
-          productName: dbProduct.name,
-          changeType: "Order Deduction",
-          quantityChanged: -item.quantity,
-          resultingStock: dbProduct.stock,
-          performedBy: req.user._id
-        });
-      }
-    }
-
-    order.status = status;
-    await order.save();
-
-    console.log(` NOTIFICATION TRANSMISSION: Customer assigned to order [ ${order._id} ] has been notified of status change: ${status}`);
-    res.status(200).json({ message: `Order status updated cleanly to [ ${status} ]`, order });
-  } catch (error) {
-    res.status(500).json({ message: "Fulfillment routing workflow state failure", error: error.message });
   }
 });
 

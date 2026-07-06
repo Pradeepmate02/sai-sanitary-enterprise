@@ -15,27 +15,25 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
           required: true
         },
-        name: { 
-          type: String, 
-          required: true 
-        },
-        quantity: {
-          type: Number,
-          required: true,
-          min: 1
-        },
-        priceAtPurchase: {
-          type: Number,
-          required: true,
-          min: 0
-        }
+        name: { type: String, required: true },
+        quantity: { type: Number, required: true, min: 1 },
+        priceAtPurchase: { type: Number, required: true, min: 0 }
       }
     ],
-    totalAmount: {
-      type: Number,
-      required: true,
-      min: 0
+    totalAmount: { type: Number, required: true, min: 0 },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "UPI"],
+      required: true
     },
+    paymentStatus: {
+      type: String,
+      enum: ["Pending", "Paid", "Failed"],
+      default: "Pending"
+    },
+    shiprocketOrderId: { type: String, default: "" },
+    shiprocketShipmentId: { type: String, default: "" },
+    shiprocketAWB: { type: String, default: "" },
     status: {
       type: String,
       enum: ["Pending", "Accepted", "Declined", "Dispatched", "Delivered"],
