@@ -1,6 +1,7 @@
 import React,{useState} from "react";
 import "./Navbar.css";
-
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import {
 FaShoppingCart,
 FaSearch,
@@ -28,9 +29,29 @@ const navigate=useNavigate();
 const user = JSON.parse(localStorage.getItem("user"));
 
 const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  window.location.reload();
+  Swal.fire({
+    title: "Logout?",
+    text: "Are you sure you want to logout?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#0f766e",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Yes, Logout",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      toast.success("Logged out successfully");
+
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 600);
+    }
+  });
 };
 
 const [menuOpen,setMenuOpen]=

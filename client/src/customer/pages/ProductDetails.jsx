@@ -3,6 +3,7 @@ import "./ProductDetails.css";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 // Local image fallback map matrix configuration
 import pvc1 from "../assets/products/pvc-pipe/pvc1.jpg";
@@ -76,7 +77,9 @@ function ProductDetails({ search, setSearch, cart, setCart }) {
       </div>
     );
   }
-
+function isLoggedIn() {
+  return !!localStorage.getItem("token");
+}
   function addToCart() {
     const existing = cart.find((item) => item.name === product.name);
 
@@ -102,6 +105,9 @@ function ProductDetails({ search, setSearch, cart, setCart }) {
     }
     showToast("🛒 Cart configuration updated cleanly");
   }
+  toast.success("Added to cart");
+}
+
 
   return (
     <>

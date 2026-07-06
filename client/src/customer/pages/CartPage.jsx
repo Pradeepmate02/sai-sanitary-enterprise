@@ -2,6 +2,7 @@ import React from "react";
 import "./CartPage.css";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 function CartPage({ cart, setCart, search, setSearch }) {
   console.log(cart);
